@@ -1,7 +1,11 @@
 package entertainment;
 
-import java.util.ArrayList;
-import java.util.List;
+import user.User;
+
+import java.util.HashMap;
+import java.util.Map;
+
+// aici il extind cum ma taie pl mea
 
 /**
  * Information about a season of a tv show
@@ -13,19 +17,29 @@ public final class Season {
      * Number of current season
      */
     private final int currentSeason;
+
+    public Map<User, Integer> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Map<User, Integer> ratings) {
+        this.ratings = ratings;
+    }
+
     /**
      * Duration in minutes of a season
      */
     private int duration;
     /**
-     * List of ratings for each season
+     * Dictionary [user : givenRating]
      */
-    private List<Double> ratings;
+    private Map<User, Integer> ratings;
 
+    // all that counts, brothers
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
         this.duration = duration;
-        this.ratings = new ArrayList<>();
+        this.ratings = new HashMap<>();
     }
 
     public int getDuration() {
@@ -34,14 +48,6 @@ public final class Season {
 
     public void setDuration(final int duration) {
         this.duration = duration;
-    }
-
-    public List<Double> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(final List<Double> ratings) {
-        this.ratings = ratings;
     }
 
     @Override

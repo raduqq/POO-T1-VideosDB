@@ -1,11 +1,15 @@
 package fileio;
 
+import actor.Actor;
 import common.Constants;
+import database.ActorsDB;
+import database.UsersDB;
 import entertainment.Season;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import user.User;
 import utils.Utils;
 
 import java.io.FileReader;
@@ -44,6 +48,10 @@ public final class InputLoader {
         List<MovieInputData> movies = new ArrayList<>();
         List<SerialInputData> serials = new ArrayList<>();
 
+        // My custom classes
+        UsersDB myUserDB = new UsersDB();
+        ActorsDB myActorDB = new ActorsDB();
+
         try {
             // Parsing the contents of the JSON file
             JSONObject jsonObject = (JSONObject) jsonParser
@@ -68,6 +76,16 @@ public final class InputLoader {
                             Utils.convertAwards((JSONArray) ((JSONObject) jsonActor)
                                     .get(Constants.AWARDS))
                     ));
+
+                    // Adding my custom actor to my custom actor DB
+                    myActorDB.addToDB(new Actor(
+                            (String) ((JSONObject) jsonActor).get(Constants.NAME),
+                            (String) ((JSONObject) jsonActor).get(Constants.DESCRIPTION),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonActor)
+                                    .get(Constants.FILMOGRAPHY)),
+                            Utils.convertAwards((JSONArray) ((JSONObject) jsonActor)
+                                    .get(Constants.AWARDS))
+                    ));
                 }
             } else {
                 System.out.println("NU EXISTA ACTORI");
@@ -76,6 +94,16 @@ public final class InputLoader {
             if (jsonUsers != null) {
                 for (Object jsonUser : jsonUsers) {
                     users.add(new UserInputData(
+                            (String) ((JSONObject) jsonUser).get(Constants.USERNAME),
+                            (String) ((JSONObject) jsonUser).get(Constants.SUBSCRIPTION),
+                            Utils.watchedMovie((JSONArray) ((JSONObject) jsonUser)
+                                    .get(Constants.HISTORY)),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonUser)
+                                    .get(Constants.FAVORITE_MOVIES))
+                    ));
+
+                    // Adding my custom user to my custom user DB
+                    myUserDB.addToDB(new User(
                             (String) ((JSONObject) jsonUser).get(Constants.USERNAME),
                             (String) ((JSONObject) jsonUser).get(Constants.SUBSCRIPTION),
                             Utils.watchedMovie((JSONArray) ((JSONObject) jsonUser)
