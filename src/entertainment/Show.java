@@ -31,10 +31,18 @@ public class Show extends Video {
     }
 
     public void computeDuration() {
-        this.duration = 0;
+        this.setDuration(0);
 
         for (Season season : seasons) {
-            this.duration += season.getDuration();
+            this.setDuration(this.getDuration() + season.getDuration());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Show{" +
+                "numberOfSeasons=" + numberOfSeasons +
+                ", seasons=" + seasons +
+                '}' + '\n';
     }
 }

@@ -57,7 +57,7 @@ public final class Season {
                 + currentSeason
                 + ", duration="
                 + duration
-                + '}';
+                + '}' + '\n';
     }
 }
 

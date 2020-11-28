@@ -60,10 +60,11 @@ public final class Actor {
 
     @Override
     public String toString() {
-        return "Actor{"
-                + "name='" + name + '\''
-                + ", careerDescription='"
-                + careerDescription + '\''
-                + ", filmography=" + filmography + '}';
+        return "Actor{" +
+                "name='" + name + '\'' +
+//                ", careerDescription='" + careerDescription + '\'' +
+                ", filmography=" + filmography +
+                ", awards=" + awards +
+                '}' + '\n';
     }
 }

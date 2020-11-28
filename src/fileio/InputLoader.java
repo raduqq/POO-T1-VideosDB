@@ -3,8 +3,13 @@ package fileio;
 import actor.Actor;
 import common.Constants;
 import database.ActorsDB;
+import database.GenreDB;
 import database.UsersDB;
+import database.VideosDB;
+import entertainment.Genre;
+import entertainment.Movie;
 import entertainment.Season;
+import entertainment.Show;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -48,9 +53,11 @@ public final class InputLoader {
         List<MovieInputData> movies = new ArrayList<>();
         List<SerialInputData> serials = new ArrayList<>();
 
-        // My custom classes
+        // My custom databases
         UsersDB myUserDB = new UsersDB();
         ActorsDB myActorDB = new ActorsDB();
+        GenreDB myGenreDB = new GenreDB();
+        VideosDB myVideoDB = new VideosDB();
 
         try {
             // Parsing the contents of the JSON file
@@ -147,6 +154,28 @@ public final class InputLoader {
                             Integer.parseInt(((JSONObject) jsonIterator).get(Constants.YEAR)
                                     .toString())
                     ));
+
+                    // Adding show to my custom video database
+                    myVideoDB.addToDB(new Show((String) ((JSONObject) jsonIterator).get(Constants.NAME),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.CAST)),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.GENRES)),
+                            ((Long) ((JSONObject) jsonIterator).get(Constants.NUMBER_OF_SEASONS))
+                                    .intValue(),
+                            seasons,
+                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.YEAR)
+                                    .toString())
+                    ));
+
+                    // Mapping show to its genre
+                    String currShowName = (String) ((JSONObject) jsonIterator).get(Constants.NAME);
+                    List<String> currGenres = Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                            .get(Constants.GENRES));
+
+                    for (String currGenre : currGenres) {
+                        myGenreDB.addToMap(currGenre, currShowName);
+                    }
                 }
             } else {
                 System.out.println("NU EXISTA SERIALE");
@@ -165,6 +194,28 @@ public final class InputLoader {
                             Integer.parseInt(((JSONObject) jsonIterator).get(Constants.DURATION)
                                     .toString())
                     ));
+
+                    // Adding movie to my custom video database
+                    myVideoDB.addToDB(new Movie(
+                            (String) ((JSONObject) jsonIterator).get(Constants.NAME),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.ACTORS)),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.GENRES)),
+                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.YEAR)
+                                    .toString()),
+                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.DURATION)
+                                    .toString())
+                    ));
+
+                    // Mapping show to its genre
+                    String currMovieName = (String) ((JSONObject) jsonIterator).get(Constants.NAME);
+                    List<String> currGenres = Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                            .get(Constants.GENRES));
+
+                    for (String currGenre : currGenres) {
+                        myGenreDB.addToMap(currGenre, currMovieName);
+                    }
                 }
             } else {
                 System.out.println("NU EXISTA FILME");
@@ -193,7 +244,8 @@ public final class InputLoader {
             e.printStackTrace();
         }
 
-        return new Input(actors, users, actions, movies, serials);
+        return new Input(actors, users, actions, movies, serials,
+                        myUserDB, myActorDB, myGenreDB, myVideoDB);
     }
 
     /**

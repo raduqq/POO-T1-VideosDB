@@ -65,13 +65,20 @@ public final class Main {
     public static void action(final String filePath1,
                               final String filePath2) throws IOException {
         InputLoader inputLoader = new InputLoader(filePath1);
-        Input input = inputLoader.readData(); //! Need to include your custom databases in this input shit
-        // sa-l fac in pizda ma-sii sa-mi returneze ce vr eu
+        Input input = inputLoader.readData();
 
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
+        System.out.println("=================================== ACTORS ===================================");
+        System.out.println(input.getMyActorDB());
+        System.out.println("=================================== GENRES ===================================");
+        System.out.println(input.getMyGenreDB());
+        System.out.println("=================================== USERS ===================================");
+        System.out.println(input.getMyUserDB());
+        System.out.println("=================================== VIDEOS ===================================");
+        System.out.println(input.getMyVideoDB());
 
         fileWriter.closeJSON(arrayResult);
     }

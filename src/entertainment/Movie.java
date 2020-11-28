@@ -24,8 +24,6 @@ public class Movie extends Video {
                  final ArrayList<String> genres, final int year,
                  final int duration) {
         super(title, year, cast, genres);
-        this.duration = duration;
+        this.setDuration(duration);
     }
-
-
 }

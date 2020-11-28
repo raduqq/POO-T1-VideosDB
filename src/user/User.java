@@ -1,5 +1,7 @@
 package user;
 
+import entertainment.Video;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -15,11 +17,11 @@ public final class User {
     /**
      * The history of the movies seen
      */
-    private Map<String, Integer> history; // switched to non-final, 'cause I'll update it
+    private Map<String, Integer> history;
     /**
      * Movies added to favorites
      */
-    private final ArrayList<String> favoriteMovies;
+    private ArrayList<String> favoriteVideos;
     /**
      * Total no. of ratings given by user (to all shows)
      */
@@ -27,10 +29,10 @@ public final class User {
 
     public User(final String username, final String subscriptionType,
                          final Map<String, Integer> history,
-                         final ArrayList<String> favoriteMovies) {
+                         final ArrayList<String> favoriteVideos) {
         this.username = username;
         this.subscriptionType = subscriptionType;
-        this.favoriteMovies = favoriteMovies;
+        this.favoriteVideos = favoriteVideos;
         this.history = history;
         this.noRatingsGiven = 0; // initially, the user didn't rate anyone
     }
@@ -47,12 +49,8 @@ public final class User {
         return subscriptionType;
     }
 
-    public ArrayList<String> getFavoriteMovies() {
-        return favoriteMovies;
-    }
-
-    public void setHistory(Map<String, Integer> history) {
-        this.history = history;
+    public ArrayList<String> getFavoriteVideos() {
+        return favoriteVideos;
     }
 
     @Override
@@ -61,6 +59,6 @@ public final class User {
                 + username + '\'' + ", subscriptionType='"
                 + subscriptionType + '\'' + ", history="
                 + history + ", favoriteMovies="
-                + favoriteMovies + '}';
+                + favoriteVideos + '}' + '\n';
     }
 }
