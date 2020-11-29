@@ -63,19 +63,33 @@ public final class Actor {
 
     public Double getAverageRating(VideosDB videosDB) {
         Double averageRating = (double) 0;
+        int ratedMoviesCnt = 0;
 
         for (String videoName : filmography) {
             Video currentVideo = videosDB.findVideoByName(videoName);
 
+            // Movie not found in database => no ratings given to it => skip it
             if (currentVideo == null) {
-                // Movie not found in database => no ratings given to it => skip it
                 continue;
             }
 
-            averageRating +=  currentVideo.getAverageRating();
+            /*
+             Finding unrated movies => skipping them
+             Finding rated movies => counting them
+            */
+            if (currentVideo.getAverageRating() > 0) {
+                ratedMoviesCnt++;
+                averageRating +=  currentVideo.getAverageRating();
+            }
         }
 
-        return averageRating / filmography.size();
+        // Actor played in movies that weren't rated
+        if (ratedMoviesCnt == 0) {
+            return (double) 0;
+        }
+
+        // Actor played in movies that were rated
+        return averageRating / ratedMoviesCnt;
     }
 
     @Override

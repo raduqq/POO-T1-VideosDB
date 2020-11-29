@@ -58,7 +58,7 @@ public class Command {
 
         if (currentHistory.containsKey(movieTitle)) {
             if(currentMovie.getRatings().containsKey(currentUser)) {
-                return "error -> " + movieTitle + " is already rated"; // replace with exact message
+                return "error -> " + movieTitle + " has been already rated"; // replace with exact message
             }
 
             currentMovie.getRatings().put(currentUser, grade);

@@ -8,6 +8,10 @@ import java.util.Map;
 public class Movie extends Video {
     @Override
     public Double getAverageRating() {
+        if (getRatings().size() == 0) {
+            return (double) 0;
+        }
+
         Double averageRating = (double) 0;
 
         for (Double rating : getRatings().values()) {

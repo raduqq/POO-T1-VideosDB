@@ -55,6 +55,10 @@ public class Season {
     }
 
     public Double getAverageRating() {
+        if (getRatings().size() == 0) {
+            return (double) 0;
+        }
+
         Double averageRating = (double) 0;
 
         for (Double rating : ratings.values()) {

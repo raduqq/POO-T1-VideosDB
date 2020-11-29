@@ -111,8 +111,9 @@ public final class Main {
                         case "actors":
                             switch (action.getCriteria()) {
                                 case "average":
-                                    System.out.println("MUIE");
-                                    System.out.println(Query.Actors.average(action.getNumber(), input.getMyVideoDB(), input.getMyActorDB(), action.getSortType()));
+                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                                    ("Query result: " + Query.Actors.average(action.getNumber(),
+                                                    input.getMyVideoDB(), input.getMyActorDB(), action.getSortType()))));
                                     break;
                             }
                     }

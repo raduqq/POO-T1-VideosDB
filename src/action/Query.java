@@ -3,6 +3,7 @@ package action;
 import actor.Actor;
 import database.ActorsDB;
 import database.VideosDB;
+import entertainment.Video;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +24,8 @@ public class Query {
             }
 
              return actorsDB.getActorList().stream()
+                     // Filter out those with 0 rating
+                     .filter(actor -> actor.getAverageRating(videosDB) > 0)
                      // Sorting with comaprator
                     .sorted(averageActorComparator)
                      // Reduce Actor objects to their "name" field
