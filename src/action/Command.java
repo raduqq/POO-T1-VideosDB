@@ -62,6 +62,7 @@ public class Command {
             }
 
             currentMovie.getRatings().put(currentUser, grade);
+            currentUser.incNoRatingsGiven();
             return "success -> " + movieTitle + " was rated with " + grade + " by " + username;
         }
 
@@ -82,6 +83,7 @@ public class Command {
             }
 
             currentSeason.getRatings().put(currentUser, grade);
+            currentUser.incNoRatingsGiven();
             return "success -> " + showTitle + " was rated with " + grade + " by " + username;
         }
 

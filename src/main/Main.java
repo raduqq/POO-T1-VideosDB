@@ -128,6 +128,12 @@ public final class Main {
                                                     input.getMyActorDB())))));
                                     break;
                             }
+                            break;
+                        case "users":
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            ("Query result: " + Query.Users.noRatings(action.getNumber(),
+                                            action.getSortType(), input.getMyUserDB()))));
+                            break;
                     }
             }
         }

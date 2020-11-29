@@ -3,8 +3,10 @@ package action;
 import actor.Actor;
 import actor.ActorsAwards;
 import database.ActorsDB;
+import database.UsersDB;
 import database.VideosDB;
 import entertainment.Video;
+import user.User;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -106,6 +108,25 @@ public class Query {
                     .filter(actor -> hasAllKeywords(actor.getCareerDescription(), keywords))
                     .sorted(descrActorComp)
                     .map(Actor::getName)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    public static class Users {
+        public static List<String> noRatings(int noUsers, String sortType, UsersDB usersDB) {
+            Comparator<User> noRatingsUserComp = Comparator
+                                                .comparingInt(User::getNoRatingsGiven)
+                                                .thenComparing(User::getUsername);
+
+            if (sortType.equals("desc")) {
+                noRatingsUserComp = noRatingsUserComp.reversed();
+            }
+
+            return usersDB.getUserList().stream()
+                    .filter(user -> user.getNoRatingsGiven() > 0)
+                    .sorted(noRatingsUserComp)
+                    .map(User::getUsername)
+                    .limit(noUsers)
                     .collect(Collectors.toList());
         }
     }

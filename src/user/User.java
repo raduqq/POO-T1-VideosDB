@@ -53,6 +53,12 @@ public final class User {
         return favoriteVideos;
     }
 
+    public int getNoRatingsGiven() {
+        return noRatingsGiven;
+    }
+
+    public void incNoRatingsGiven() { noRatingsGiven++;}
+
     @Override
     public String toString() {
         return "User{" + "username='"
