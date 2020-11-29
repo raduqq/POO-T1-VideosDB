@@ -1,8 +1,11 @@
 package main;
 
+import action.Command;
+import action.Query;
 import checker.Checkstyle;
 import checker.Checker;
 import common.Constants;
+import fileio.ActionInputData;
 import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
@@ -71,14 +74,50 @@ public final class Main {
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
-        System.out.println("=================================== ACTORS ===================================");
-        System.out.println(input.getMyActorDB());
-        System.out.println("=================================== GENRES ===================================");
-        System.out.println(input.getMyGenreDB());
-        System.out.println("=================================== USERS ===================================");
-        System.out.println(input.getMyUserDB());
-        System.out.println("=================================== VIDEOS ===================================");
-        System.out.println(input.getMyVideoDB());
+        for (ActionInputData action : input.getCommands()) {
+            switch (action.getActionType()) {
+                case "command":
+                    switch (action.getType()) {
+                        case "favorite":
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                                Command.favorite(action.getUsername(),
+                                                action.getTitle(), input.getMyVideoDB(), input.getMyUserDB())));
+                            break;
+                        case "view":
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                                Command.view(action.getUsername(),
+                                                action.getTitle(), input.getMyVideoDB(), input.getMyUserDB())));
+                            break;
+                        case "rating":
+                            if (action.getSeasonNumber() == 0) {
+                                // No season given => rate movie
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                                    Command.rateMovie(action.getUsername(), action.getTitle(),
+                                                    action.getGrade(), input.getMyVideoDB(), input.getMyUserDB())));
+                            } else {
+                                // Season given => rate show
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                                    Command.rateSeason(action.getUsername(), action.getTitle(),
+                                                    action.getSeasonNumber(), action.getGrade(),
+                                                    input.getMyVideoDB(), input.getMyUserDB())));
+                            }
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + action.getType());
+                    }
+                    break;
+                case "query":
+                    switch (action.getObjectType()) {
+                        case "actors":
+                            switch (action.getCriteria()) {
+                                case "average":
+                                    System.out.println("MUIE");
+                                    System.out.println(Query.Actors.average(action.getNumber(), input.getMyVideoDB(), input.getMyActorDB(), action.getSortType()));
+                                    break;
+                            }
+                    }
+            }
+        }
 
         fileWriter.closeJSON(arrayResult);
     }

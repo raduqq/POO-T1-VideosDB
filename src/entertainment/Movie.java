@@ -3,21 +3,18 @@ package entertainment;
 import user.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Movie extends Video {
-    /**
-     * Dictionary [user : givenRating]
-     */
-    private Map<User, Integer> ratings;
+    @Override
+    public Double getAverageRating() {
+        Double averageRating = (double) 0;
 
-    public Map<User, Integer> getRatings() {
-        return ratings;
-    }
+        for (Double rating : getRatings().values()) {
+            averageRating += rating;
+        }
 
-    public void setRatings(Map<User, Integer> ratings) {
-        this.ratings = ratings;
+        return averageRating / getRatings().size();
     }
 
     public Movie(final String title, final ArrayList<String> cast,

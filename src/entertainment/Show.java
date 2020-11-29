@@ -39,6 +39,17 @@ public class Show extends Video {
     }
 
     @Override
+    public Double getAverageRating() {
+        Double averageRating = (double) 0;
+
+        for (Season season : seasons) {
+            averageRating += season.getAverageRating();
+        }
+
+        return averageRating / numberOfSeasons;
+    }
+
+    @Override
     public String toString() {
         return "Show{" +
                 "numberOfSeasons=" + numberOfSeasons +

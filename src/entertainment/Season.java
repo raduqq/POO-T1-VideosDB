@@ -5,26 +5,16 @@ import user.User;
 import java.util.HashMap;
 import java.util.Map;
 
-// aici il extind cum ma taie pl mea
-
 /**
  * Information about a season of a tv show
  * <p>
  * DO NOT MODIFY
  */
-public final class Season {
+public class Season {
     /**
      * Number of current season
      */
     private final int currentSeason;
-
-    public Map<User, Integer> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(Map<User, Integer> ratings) {
-        this.ratings = ratings;
-    }
 
     /**
      * Duration in minutes of a season
@@ -33,7 +23,7 @@ public final class Season {
     /**
      * Dictionary [user : givenRating]
      */
-    private Map<User, Integer> ratings;
+    private Map<User, Double> ratings;
 
     // all that counts, brothers
     public Season(final int currentSeason, final int duration) {
@@ -58,6 +48,20 @@ public final class Season {
                 + ", duration="
                 + duration
                 + '}' + '\n';
+    }
+
+    public Map<User, Double> getRatings() {
+        return ratings;
+    }
+
+    public Double getAverageRating() {
+        Double averageRating = (double) 0;
+
+        for (Double rating : ratings.values()) {
+            averageRating += rating;
+        }
+
+        return averageRating / ratings.size();
     }
 }
 

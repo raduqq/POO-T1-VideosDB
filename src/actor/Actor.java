@@ -1,5 +1,8 @@
 package actor;
 
+import database.VideosDB;
+import entertainment.Video;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -56,6 +59,23 @@ public final class Actor {
 
     public void setCareerDescription(final String careerDescription) {
         this.careerDescription = careerDescription;
+    }
+
+    public Double getAverageRating(VideosDB videosDB) {
+        Double averageRating = (double) 0;
+
+        for (String videoName : filmography) {
+            Video currentVideo = videosDB.findVideoByName(videoName);
+
+            if (currentVideo == null) {
+                // Movie not found in database => no ratings given to it => skip it
+                continue;
+            }
+
+            averageRating +=  currentVideo.getAverageRating();
+        }
+
+        return averageRating / filmography.size();
     }
 
     @Override
