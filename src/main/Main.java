@@ -116,13 +116,16 @@ public final class Main {
                                                     action.getSortType(), input.getMyVideoDB(), input.getMyActorDB()))));
                                     break;
                                 case "awards":
-                                    System.out.println("TEST FILE: " + filePath1 + " // RESULT: " + ("Query result: " + Query.Actors.awards(action.getSortType(),
-                                            action.getFilters().get(Constants.FILTER_AWARDS_INDEX),
-                                            input.getMyActorDB())));
                                     arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                     ("Query result: " + Query.Actors.awards(action.getSortType(),
                                                     action.getFilters().get(Constants.FILTER_AWARDS_INDEX),
                                                     input.getMyActorDB()))));
+                                    break;
+                                case "filter_description":
+                                    arrayResult.add((fileWriter.writeFile(action.getActionId(), null,
+                                                    ("Query result: " + Query.Actors.description(action.getSortType(),
+                                                    action.getFilters().get(Constants.FILTER_WORDS_INDEX),
+                                                    input.getMyActorDB())))));
                                     break;
                             }
                     }

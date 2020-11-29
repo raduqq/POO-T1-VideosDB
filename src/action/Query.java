@@ -16,21 +16,21 @@ import java.util.stream.Collectors;
 public class Query {
     public static class Actors {
         public static List<String> average(int noActors, String sortType, VideosDB videosDB, ActorsDB actorsDB) {
-            Comparator<Actor> averageActorComparator = Comparator
-                                                    // First sorting criteria -> averageRating of actor
-                                                    .comparingDouble((Actor actor) -> actor.getAverageRating(videosDB))
-                                                    // Second sorting criteria -> alphabetical order
-                                                    .thenComparing(Actor::getName);
+            Comparator<Actor> avgActorComp = Comparator
+                                            // First sorting criteria -> averageRating of actor
+                                            .comparingDouble((Actor actor) -> actor.getAverageRating(videosDB))
+                                            // Second sorting criteria -> alphabetical order
+                                            .thenComparing(Actor::getName);
 
             if (sortType.equals("desc")) {
-                averageActorComparator = averageActorComparator.reversed();
+                avgActorComp = avgActorComp.reversed();
             }
 
              return actorsDB.getActorList().stream()
                      // Filter out those with 0 rating
                      .filter(actor -> actor.getAverageRating(videosDB) > 0)
                      // Sorting with comaprator
-                    .sorted(averageActorComparator)
+                    .sorted(avgActorComp)
                      // Reduce Actor objects to their "name" field
                     .map(Actor::getName)
                      // Return first "noActors" elem in list
@@ -59,22 +59,55 @@ public class Query {
         }
 
         public static List<String> awards(String sortType, List<String> awardsList, ActorsDB actorsDB) {
-            Comparator<Actor> awardsActorComparator = Comparator
-                                                    .comparingInt(Actor::getTotalNoAwards)
-                                                    .thenComparing(Actor::getName);
+            // Sorting by:
+            Comparator<Actor> awardsActorComp = Comparator
+                                                // Total no. awards
+                                                .comparingInt(Actor::getTotalNoAwards)
+                                                // Name
+                                                .thenComparing(Actor::getName)
+                                                // Index in database
+                                                .thenComparing(actor -> actorsDB.getActorList().indexOf(actor));
 
             if (sortType.equals("desc")) {
-                awardsActorComparator = awardsActorComparator.reversed();
+                awardsActorComp = awardsActorComp.reversed();
             }
 
             return actorsDB.getActorList().stream()
                     .filter(actor -> hasAllAwards(actor, awardsList))
-                    .sorted(awardsActorComparator)
+                    .sorted(awardsActorComp)
                     .map(Actor::getName)
                     .collect(Collectors.toList());
         }
 
-        public static List<String> description() { return null; }
+        public static boolean hasAllKeywords(String description, List<String> keywords) {
+            for (String keyword : keywords) {
+                String regex = " " + keyword + "[ ,.!?']";
+                Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(description);
+
+                if (!matcher.find()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static List<String> description(String sortType, List<String> keywords, ActorsDB actorsDB) {
+            Comparator<Actor> descrActorComp = Comparator
+                                                .comparing(Actor::getName)
+                                                .thenComparing(actor -> actorsDB.getActorList().indexOf(actor));
+
+            if(sortType.equals("desc")) {
+                descrActorComp = descrActorComp.reversed();
+            }
+
+            return actorsDB.getActorList().stream()
+                    .filter(actor -> hasAllKeywords(actor.getCareerDescription(), keywords))
+                    .sorted(descrActorComp)
+                    .map(Actor::getName)
+                    .collect(Collectors.toList());
+        }
     }
 
 }
