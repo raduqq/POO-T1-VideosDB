@@ -113,7 +113,16 @@ public final class Main {
                                 case "average":
                                     arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                     ("Query result: " + Query.Actors.average(action.getNumber(),
-                                                    input.getMyVideoDB(), input.getMyActorDB(), action.getSortType()))));
+                                                    action.getSortType(), input.getMyVideoDB(), input.getMyActorDB()))));
+                                    break;
+                                case "awards":
+                                    System.out.println("TEST FILE: " + filePath1 + " // RESULT: " + ("Query result: " + Query.Actors.awards(action.getSortType(),
+                                            action.getFilters().get(Constants.FILTER_AWARDS_INDEX),
+                                            input.getMyActorDB())));
+                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                                    ("Query result: " + Query.Actors.awards(action.getSortType(),
+                                                    action.getFilters().get(Constants.FILTER_AWARDS_INDEX),
+                                                    input.getMyActorDB()))));
                                     break;
                             }
                     }

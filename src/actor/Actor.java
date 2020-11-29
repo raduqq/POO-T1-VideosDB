@@ -92,6 +92,16 @@ public final class Actor {
         return averageRating / ratedMoviesCnt;
     }
 
+    public Integer getTotalNoAwards() {
+        Integer cnt = 0;
+
+        for (Integer noAwards : awards.values()) {
+            cnt += noAwards;
+        }
+
+        return cnt;
+    }
+
     @Override
     public String toString() {
         return "Actor{" +
