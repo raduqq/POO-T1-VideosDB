@@ -127,17 +127,17 @@ public class Query {
             Stream<Video> result = videosDB.getVideoList().stream()
                                     .filter(video -> video.getFavCount() > 0);
 
-            // Applying year filter, if applicable
-            if (years.get(0) != null) {
-                for (String year : years) {
-                    result = result.filter(video -> Integer.parseInt(year) == video.getYear());
-                }
-            }
-
             // Applying genre filter, if applicable
             if (genres.get(0) != null) {
                 for (String genre : genres) {
                     result = result.filter((video -> video.getGenres().contains(genre)));
+                }
+            }
+
+            // Applying year filter, if applicable
+            if (years.get(0) != null) {
+                for (String year : years) {
+                    result = result.filter(video -> Integer.parseInt(year) == video.getYear());
                 }
             }
 

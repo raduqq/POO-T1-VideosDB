@@ -2,6 +2,7 @@ package main;
 
 import action.Command;
 import action.Query;
+import action.Recommend;
 import checker.Checkstyle;
 import checker.Checker;
 import common.Constants;
@@ -179,6 +180,28 @@ public final class Main {
                                     break;
                             }
                     }
+                case "recommendation":
+                    switch (action.getType()) {
+                        case "standard":
+                            break;
+                        case "best_unseen":
+                            // noinspection unchecked
+
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            "BestRatedUnseenRecommendation result: " +
+                                            Recommend.Basic.bestUnseen(action.getUsername(),
+                                            input.getMyUserDB(), input.getMyVideoDB())));
+                            break;
+                        case "popular":
+                            //TODO
+                            break;
+                        case "favorite":
+                            //TODO
+                            break;
+                    }
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + action.getActionType());
             }
         }
 
