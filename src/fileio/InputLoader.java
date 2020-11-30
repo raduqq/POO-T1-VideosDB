@@ -123,6 +123,49 @@ public final class InputLoader {
                 System.out.println("NU EXISTA UTILIZATORI");
             }
 
+            if (jsonMovies != null) {
+                for (Object jsonIterator : jsonMovies) {
+                    movies.add(new MovieInputData(
+                            (String) ((JSONObject) jsonIterator).get(Constants.NAME),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.ACTORS)),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.GENRES)),
+                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.YEAR)
+                                    .toString()),
+                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.DURATION)
+                                    .toString())
+                    ));
+
+                    // Adding movie to my custom video database
+                    myVideoDB.addToDB(new Movie(
+                            (String) ((JSONObject) jsonIterator).get(Constants.NAME),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.ACTORS)),
+                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                                    .get(Constants.GENRES)),
+                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.YEAR)
+                                    .toString()),
+                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.DURATION)
+                                    .toString())
+                    ));
+
+                    // Increasing movie count in database
+                    myVideoDB.incNoMovies();
+
+                    // Mapping movie to its genre
+                    String currMovieName = (String) ((JSONObject) jsonIterator).get(Constants.NAME);
+                    List<String> currGenres = Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                            .get(Constants.GENRES));
+
+                    for (String currGenre : currGenres) {
+                        myGenreDB.addToMap(currGenre, currMovieName);
+                    }
+                }
+            } else {
+                System.out.println("NU EXISTA FILME");
+            }
+
             if (jsonSerial != null) {
                 for (Object jsonIterator : jsonSerial) {
 
@@ -168,6 +211,9 @@ public final class InputLoader {
                                     .toString())
                     ));
 
+                    // Increasing show count in database
+                    myVideoDB.incNoShows();
+
                     // Mapping show to its genre
                     String currShowName = (String) ((JSONObject) jsonIterator).get(Constants.NAME);
                     List<String> currGenres = Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
@@ -179,46 +225,6 @@ public final class InputLoader {
                 }
             } else {
                 System.out.println("NU EXISTA SERIALE");
-            }
-
-            if (jsonMovies != null) {
-                for (Object jsonIterator : jsonMovies) {
-                    movies.add(new MovieInputData(
-                            (String) ((JSONObject) jsonIterator).get(Constants.NAME),
-                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
-                                    .get(Constants.ACTORS)),
-                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
-                                    .get(Constants.GENRES)),
-                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.YEAR)
-                                    .toString()),
-                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.DURATION)
-                                    .toString())
-                    ));
-
-                    // Adding movie to my custom video database
-                    myVideoDB.addToDB(new Movie(
-                            (String) ((JSONObject) jsonIterator).get(Constants.NAME),
-                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
-                                    .get(Constants.ACTORS)),
-                            Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
-                                    .get(Constants.GENRES)),
-                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.YEAR)
-                                    .toString()),
-                            Integer.parseInt(((JSONObject) jsonIterator).get(Constants.DURATION)
-                                    .toString())
-                    ));
-
-                    // Mapping show to its genre
-                    String currMovieName = (String) ((JSONObject) jsonIterator).get(Constants.NAME);
-                    List<String> currGenres = Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
-                            .get(Constants.GENRES));
-
-                    for (String currGenre : currGenres) {
-                        myGenreDB.addToMap(currGenre, currMovieName);
-                    }
-                }
-            } else {
-                System.out.println("NU EXISTA FILME");
             }
 
             /*

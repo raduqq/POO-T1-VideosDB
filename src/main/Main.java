@@ -6,6 +6,7 @@ import action.Recommend;
 import checker.Checkstyle;
 import checker.Checker;
 import common.Constants;
+import entertainment.Video;
 import fileio.ActionInputData;
 import fileio.Input;
 import fileio.InputLoader;
@@ -180,6 +181,7 @@ public final class Main {
                                     break;
                             }
                     }
+                    break;
                 case "recommendation":
                     switch (action.getType()) {
                         case "standard":
@@ -187,21 +189,16 @@ public final class Main {
                         case "best_unseen":
                             // noinspection unchecked
 
-                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            "BestRatedUnseenRecommendation result: " +
+                            arrayResult.add((fileWriter.writeFile(action.getActionId(), null,
                                             Recommend.Basic.bestUnseen(action.getUsername(),
-                                            input.getMyUserDB(), input.getMyVideoDB())));
+                                            input.getMyUserDB(), input.getMyVideoDB()))));
                             break;
                         case "popular":
-                            //TODO
                             break;
                         case "favorite":
-                            //TODO
                             break;
                     }
                     break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + action.getActionType());
             }
         }
 

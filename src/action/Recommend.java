@@ -7,7 +7,6 @@ import user.User;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Recommend {
     public static class Basic {
@@ -18,24 +17,26 @@ public class Recommend {
             
             Comparator<Video> bestUnseenVideoComp = Comparator
                                                     .comparingDouble(Video::getAverageRating)
-                                                    .thenComparingInt(video -> videosDB.getVideoList().indexOf(video))
-                                                    .reversed();
+                                                    // First sorts by ratings in descending order
+                                                    .reversed()
+                                                    // Then ascendingly by index in database
+                                                    .thenComparingInt(video -> videosDB.getVideoList().indexOf(video));
 
             String result = videosDB.getVideoList().stream()
                     // Filters out videos that aren't in user's view history
-                    .filter(video -> user.getHistory().containsKey(video.getTitle()))
+                    .filter(video -> !user.getHistory().containsKey(video.getTitle()))
                     .sorted(bestUnseenVideoComp)
                     .map(Video::getTitle)
                     // We need only one recommendation
                     .limit(1)
-                    .collect(Collectors.joining());
+                    .collect(Collectors.joining(" / "));
 
             // Couldn't find a recommendation
             if (result.isEmpty()) {
                 return "BestRatedUnseenRecommendation cannot be applied!";
             }
 
-            return result;
+            return "BestRatedUnseenRecommendation result: " + result;
         }
     }
 
@@ -57,7 +58,7 @@ public class Recommend {
                 return "PopularRecommendation cannot be applied!";
             }
 
-            return result;
+            return "PopularRecommendation result: " + result;
         }
 
         //TODO: Favorite
@@ -77,7 +78,7 @@ public class Recommend {
                 return "FavoriteRecommendation cannot be applied!";
             }
 
-            return result;
+            return "FavoriteRecommendation result: " + result;
         }
 
         //Search

@@ -10,7 +10,31 @@ import java.util.Map;
 public class VideosDB {
     private List<Video> videoList;
 
-    public VideosDB() { videoList = new ArrayList<>(); }
+    private int noMovies;
+
+    private int noShows;
+
+    public VideosDB() {
+        videoList = new ArrayList<>();
+        noMovies = 0;
+        noShows = 0;
+    }
+
+    public int getNoMovies() {
+        return noMovies;
+    }
+
+    public int getNoShows() {
+        return noShows;
+    }
+
+    public void incNoMovies() {
+        noMovies++;
+    }
+
+    public void incNoShows() {
+        noShows++;
+    }
 
     public List<Video> getVideoList() {
         return videoList;
