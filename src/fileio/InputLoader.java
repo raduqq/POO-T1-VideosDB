@@ -224,9 +224,10 @@ public final class InputLoader {
             /*
               Now that users, movies and shows were added to
               their respective databases, we can compute
-              the initial favCount of all videos
+              the initial favCount + viewCount of all videos
              */
             myVideoDB.computeInitialFavCount(myUserDB);
+            myVideoDB.computeInitialViewCount(myUserDB);
 
             actions = readActions(jsonObject, Math.max(Math.max(movies.size()
                     + serials.size(), users.size()), actors.size()));

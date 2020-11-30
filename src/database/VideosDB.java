@@ -5,6 +5,7 @@ import user.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class VideosDB {
     private List<Video> videoList;
@@ -35,6 +36,16 @@ public class VideosDB {
             for (String videoName : user.getFavoriteVideos()) {
                 Video currentVideo = this.findVideoByName(videoName);
                 currentVideo.incFavCount();
+            }
+        }
+    }
+
+    public void computeInitialViewCount(UsersDB usersDB) {
+        for (User user : usersDB.getUserList()) {
+            // Incrementing view count for each video in user's history
+            for (Map.Entry<String, Integer> historyData : user.getHistory().entrySet()) {
+                Video currentVideo = this.findVideoByName(historyData.getKey());
+                currentVideo.incViewCount(historyData.getValue());
             }
         }
     }

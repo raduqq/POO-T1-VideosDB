@@ -45,7 +45,8 @@ public class Command {
             currentHistory.put(videoTitle, 1);
         }
 
-        videosDB.findVideoByName(videoTitle).incViewCount();
+        // Through this command, user views given video only once
+        videosDB.findVideoByName(videoTitle).incViewCount(1);
 
         return "success -> " + videoTitle + " was viewed with total views of " + currentHistory.get(videoTitle);
     }

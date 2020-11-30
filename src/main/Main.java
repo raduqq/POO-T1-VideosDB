@@ -73,8 +73,6 @@ public final class Main {
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult = new JSONArray();
 
-        System.out.println(filePath1);
-
         //TODO add here the entry point to your implementation
         for (ActionInputData action : input.getCommands()) {
             switch (action.getActionType()) {
@@ -154,15 +152,32 @@ public final class Main {
                             break;
                         default:
                             // case "movies" + case "shows"
-                            // noinspection unchecked
+                            switch (action.getCriteria()) {
+                                case "ratings":
+                                    break;
+                                case "longest":
+                                    break;
+                                case "favorite":
+                                    // noinspection unchecked
 
-                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                             ("Query result: " + Query.Videos.favorite(action.getNumber(),
                                                     action.getSortType(),
                                                     action.getFilters().get(Constants.FILTER_YEAR_INDEX),
                                                     action.getFilters().get(Constants.FILTER_GENRE_INDEX),
                                                     input.getMyVideoDB()))));
-                            break;
+                                    break;
+                                case "most_viewed":
+                                    // noinspection unchecked
+
+                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            ("Query result: " + Query.Videos.mostViewed(action.getNumber(),
+                                                    action.getSortType(),
+                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
+                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
+                                                    input.getMyVideoDB()))));
+                                    break;
+                            }
                     }
             }
         }

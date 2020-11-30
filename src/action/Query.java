@@ -1,14 +1,12 @@
 package action;
 
 import actor.Actor;
-import actor.ActorsAwards;
 import database.ActorsDB;
 import database.UsersDB;
 import database.VideosDB;
 import entertainment.Video;
 import user.User;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -18,6 +16,39 @@ import java.util.stream.Stream;
 
 public class Query {
     public static class Actors {
+        public static boolean hasAllAwards(Actor actor, List <String> awardsList) {
+            List <String> requiredAwardsList = awardsList.stream()
+                    // Converting ActorsAwards type to lower-case String
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toList());
+            List <String> actorAwardsList = actor.getAwards().keySet().stream()
+                    // Converting ActorsAwards type to lower-case String
+                    .map(award -> String.valueOf(award).toLowerCase())
+                    .collect(Collectors.toList());
+
+            for (String requiredAward : requiredAwardsList) {
+                if (!actorAwardsList.contains(requiredAward)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static boolean hasAllKeywords(String description, List<String> keywords) {
+            for (String keyword : keywords) {
+                String regex = " " + keyword + "[ ,.!?']";
+                Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(description);
+
+                if (!matcher.find()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static List<String> average(int noActors, String sortType, VideosDB videosDB, ActorsDB actorsDB) {
             Comparator<Actor> avgActorComp = Comparator
                                             // First sorting criteria -> averageRating of actor
@@ -42,25 +73,6 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        public static boolean hasAllAwards(Actor actor, List <String> awardsList) {
-            List <String> requiredAwardsList = awardsList.stream()
-                                            // Converting ActorsAwards type to lower-case String
-                                            .map(String::toLowerCase)
-                                            .collect(Collectors.toList());
-            List <String> actorAwardsList = actor.getAwards().keySet().stream()
-                                            // Converting ActorsAwards type to lower-case String
-                                            .map(award -> String.valueOf(award).toLowerCase())
-                                            .collect(Collectors.toList());
-
-            for (String requiredAward : requiredAwardsList) {
-                if (!actorAwardsList.contains(requiredAward)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         public static List<String> awards(String sortType, List<String> awardsList, ActorsDB actorsDB) {
             // Sorting by:
             Comparator<Actor> awardsActorComp = Comparator
@@ -82,19 +94,6 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        public static boolean hasAllKeywords(String description, List<String> keywords) {
-            for (String keyword : keywords) {
-                String regex = " " + keyword + "[ ,.!?']";
-                Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(description);
-
-                if (!matcher.find()) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         public static List<String> description(String sortType, List<String> keywords, ActorsDB actorsDB) {
             Comparator<Actor> descrActorComp = Comparator
@@ -149,11 +148,41 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        public static String longest() {
-            return null;
+        // longest
+
+        public static List<String> mostViewed(int noVideos, String sortType, List<String> years, List <String> genres, VideosDB videosDB) {
+            Comparator<Video> mostViewedVideoComp = Comparator
+                                                    .comparingInt(Video::getViewCount)
+                                                    .thenComparing(Video::getTitle);
+
+            if (sortType.equals("desc")) {
+                mostViewedVideoComp = mostViewedVideoComp.reversed();
+            }
+
+            Stream<Video> result = videosDB.getVideoList().stream()
+                                    .filter(video -> video.getViewCount() > 0);
+
+            // Applying year filter, if applicable
+            if (years.get(0) != null) {
+                for (String year : years) {
+                    result = result.filter(video -> Integer.parseInt(year) == video.getYear());
+                }
+            }
+
+            // Applying genre filter, if applicable
+            if (genres.get(0) != null) {
+                for (String genre : genres) {
+                    result = result.filter((video -> video.getGenres().contains(genre)));
+                }
+            }
+
+            return result
+                    .sorted(mostViewedVideoComp)
+                    .map(Video::getTitle)
+                    .limit(noVideos)
+                    .collect(Collectors.toList());
         }
 
-        // most viewed
     }
 
     public static class Users {
