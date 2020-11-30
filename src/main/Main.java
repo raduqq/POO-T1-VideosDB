@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
- * The entry point to this homework. It runs the checker that tests your implentation.
+ * The entry point to this homework. It runs the checker that tests your implementation.
  */
 public final class Main {
     /**
@@ -73,17 +73,23 @@ public final class Main {
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult = new JSONArray();
 
+        System.out.println(filePath1);
+
         //TODO add here the entry point to your implementation
         for (ActionInputData action : input.getCommands()) {
             switch (action.getActionType()) {
                 case "command":
                     switch (action.getType()) {
                         case "favorite":
+                            // noinspection unchecked
+
                             arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                 Command.favorite(action.getUsername(),
                                                 action.getTitle(), input.getMyVideoDB(), input.getMyUserDB())));
                             break;
                         case "view":
+                            // noinspection unchecked
+
                             arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                 Command.view(action.getUsername(),
                                                 action.getTitle(), input.getMyVideoDB(), input.getMyUserDB())));
@@ -91,11 +97,15 @@ public final class Main {
                         case "rating":
                             if (action.getSeasonNumber() == 0) {
                                 // No season given => rate movie
+                                // noinspection unchecked
+
                                 arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                     Command.rateMovie(action.getUsername(), action.getTitle(),
                                                     action.getGrade(), input.getMyVideoDB(), input.getMyUserDB())));
                             } else {
                                 // Season given => rate show
+                                // noinspection unchecked
+
                                 arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                     Command.rateSeason(action.getUsername(), action.getTitle(),
                                                     action.getSeasonNumber(), action.getGrade(),
@@ -111,17 +121,23 @@ public final class Main {
                         case "actors":
                             switch (action.getCriteria()) {
                                 case "average":
+                                    // noinspection unchecked
+
                                     arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                     ("Query result: " + Query.Actors.average(action.getNumber(),
                                                     action.getSortType(), input.getMyVideoDB(), input.getMyActorDB()))));
                                     break;
                                 case "awards":
+                                    // noinspection unchecked
+
                                     arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                                     ("Query result: " + Query.Actors.awards(action.getSortType(),
                                                     action.getFilters().get(Constants.FILTER_AWARDS_INDEX),
                                                     input.getMyActorDB()))));
                                     break;
                                 case "filter_description":
+                                    // noinspection unchecked
+
                                     arrayResult.add((fileWriter.writeFile(action.getActionId(), null,
                                                     ("Query result: " + Query.Actors.description(action.getSortType(),
                                                     action.getFilters().get(Constants.FILTER_WORDS_INDEX),
@@ -130,9 +146,22 @@ public final class Main {
                             }
                             break;
                         case "users":
+                            // noinspection unchecked
+
                             arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                             ("Query result: " + Query.Users.noRatings(action.getNumber(),
                                             action.getSortType(), input.getMyUserDB()))));
+                            break;
+                        default:
+                            // case "movies" + case "shows"
+                            // noinspection unchecked
+
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            ("Query result: " + Query.Videos.favorite(action.getNumber(),
+                                                    action.getSortType(),
+                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
+                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
+                                                    input.getMyVideoDB()))));
                             break;
                     }
             }

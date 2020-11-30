@@ -1,6 +1,7 @@
 package database;
 
 import entertainment.Video;
+import user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,16 @@ public class VideosDB {
         }
 
         return null;
+    }
+
+    public void computeInitialFavCount(UsersDB usersDB) {
+        for (User user : usersDB.getUserList()) {
+            // Incrementing fav count for each favorite video of user
+            for (String videoName : user.getFavoriteVideos()) {
+                Video currentVideo = this.findVideoByName(videoName);
+                currentVideo.incFavCount();
+            }
+        }
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Query {
     public static class Actors {
@@ -110,6 +111,49 @@ public class Query {
                     .map(Actor::getName)
                     .collect(Collectors.toList());
         }
+    }
+
+    public static class Videos {
+        // rating
+
+        public static List<String> favorite(int noVideos, String sortType, List<String> years, List<String> genres, VideosDB videosDB) {
+            Comparator<Video> favVideoComp = Comparator
+                                            .comparingInt(Video::getFavCount)
+                                            .thenComparing(Video::getTitle);
+
+            if (sortType.equals("desc")) {
+                favVideoComp = favVideoComp.reversed();
+            }
+
+            Stream<Video> result = videosDB.getVideoList().stream()
+                                    .filter(video -> video.getFavCount() > 0);
+
+            // Applying year filter, if applicable
+            if (years.get(0) != null) {
+                for (String year : years) {
+                    result = result.filter(video -> Integer.parseInt(year) == video.getYear());
+                }
+            }
+
+            // Applying genre filter, if applicable
+            if (genres.get(0) != null) {
+                for (String genre : genres) {
+                    result = result.filter((video -> video.getGenres().contains(genre)));
+                }
+            }
+
+            return result
+                    .sorted(favVideoComp)
+                    .map(Video::getTitle)
+                    .limit(noVideos)
+                    .collect(Collectors.toList());
+        }
+
+        public static String longest() {
+            return null;
+        }
+
+        // most viewed
     }
 
     public static class Users {

@@ -221,6 +221,13 @@ public final class InputLoader {
                 System.out.println("NU EXISTA FILME");
             }
 
+            /*
+              Now that users, movies and shows were added to
+              their respective databases, we can compute
+              the initial favCount of all videos
+             */
+            myVideoDB.computeInitialFavCount(myUserDB);
+
             actions = readActions(jsonObject, Math.max(Math.max(movies.size()
                     + serials.size(), users.size()), actors.size()));
 

@@ -34,6 +34,7 @@ public final class User {
         this.subscriptionType = subscriptionType;
         this.favoriteVideos = favoriteVideos;
         this.history = history;
+
         this.noRatingsGiven = 0; // initially, the user didn't rate anyone
     }
 
