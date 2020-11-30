@@ -6,7 +6,6 @@ import action.Recommend;
 import checker.Checkstyle;
 import checker.Checker;
 import common.Constants;
-import entertainment.Video;
 import fileio.ActionInputData;
 import fileio.Input;
 import fileio.InputLoader;
@@ -164,7 +163,7 @@ public final class Main {
 
                                     arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                             ("Query result: " + Query.Videos.favorite(action.getNumber(),
-                                                    action.getSortType(),
+                                                    action.getSortType(), action.getObjectType(),
                                                     action.getFilters().get(Constants.FILTER_YEAR_INDEX),
                                                     action.getFilters().get(Constants.FILTER_GENRE_INDEX),
                                                     input.getMyVideoDB()))));
@@ -174,7 +173,7 @@ public final class Main {
 
                                     arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
                                             ("Query result: " + Query.Videos.mostViewed(action.getNumber(),
-                                                    action.getSortType(),
+                                                    action.getSortType(), action.getObjectType(),
                                                     action.getFilters().get(Constants.FILTER_YEAR_INDEX),
                                                     action.getFilters().get(Constants.FILTER_GENRE_INDEX),
                                                     input.getMyVideoDB()))));

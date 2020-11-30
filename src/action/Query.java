@@ -115,7 +115,7 @@ public class Query {
     public static class Videos {
         // rating
 
-        public static List<String> favorite(int noVideos, String sortType, List<String> years, List<String> genres, VideosDB videosDB) {
+        public static List<String> favorite(int noVideos, String sortType, String objectType, List<String> years, List<String> genres, VideosDB videosDB) {
             Comparator<Video> favVideoComp = Comparator
                                             .comparingInt(Video::getFavCount)
                                             .thenComparing(Video::getTitle);
@@ -124,8 +124,16 @@ public class Query {
                 favVideoComp = favVideoComp.reversed();
             }
 
-            Stream<Video> result = videosDB.getVideoList().stream()
-                                    .filter(video -> video.getFavCount() > 0);
+            List<Video> currentVideoList;
+
+            if (objectType.equals("movies")) {
+                currentVideoList = videosDB.getVideoList().subList(0, videosDB.getNoMovies());
+            } else {
+                currentVideoList = videosDB.getVideoList().subList(videosDB.getNoMovies(), videosDB.getVideoList().size());
+            }
+
+            Stream<Video> result = currentVideoList.stream()
+                                    .filter(video -> video.getViewCount() > 0);
 
             // Applying genre filter, if applicable
             if (genres.get(0) != null) {
@@ -150,7 +158,7 @@ public class Query {
 
         // longest
 
-        public static List<String> mostViewed(int noVideos, String sortType, List<String> years, List <String> genres, VideosDB videosDB) {
+        public static List<String> mostViewed(int noVideos, String sortType, String objectType, List<String> years, List <String> genres, VideosDB videosDB) {
             Comparator<Video> mostViewedVideoComp = Comparator
                                                     .comparingInt(Video::getViewCount)
                                                     .thenComparing(Video::getTitle);
@@ -159,7 +167,15 @@ public class Query {
                 mostViewedVideoComp = mostViewedVideoComp.reversed();
             }
 
-            Stream<Video> result = videosDB.getVideoList().stream()
+            List<Video> currentVideoList;
+
+            if (objectType.equals("movies")) {
+                currentVideoList = videosDB.getVideoList().subList(0, videosDB.getNoMovies());
+            } else {
+                currentVideoList = videosDB.getVideoList().subList(videosDB.getNoMovies(), videosDB.getVideoList().size());
+            }
+
+            Stream<Video> result = currentVideoList.stream()
                                     .filter(video -> video.getViewCount() > 0);
 
             // Applying year filter, if applicable
