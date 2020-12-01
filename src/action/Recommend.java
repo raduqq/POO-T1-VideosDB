@@ -85,7 +85,6 @@ public class Recommend {
 
     public static class Premium {
         /**
-         * NOTE: not implemented yet
          *
          * popular recommendation strategy
          * ranks genre by their popularity
@@ -193,7 +192,7 @@ public class Recommend {
             }
 
             Comparator<Video> searchVideoComp = Comparator
-                                            .comparingInt(Video::getFavCount)
+                                            .comparingDouble(Video::getAverageRating)
                                             .thenComparing(Video::getTitle);
 
             List<String> result = videosDB.getVideoList().stream()

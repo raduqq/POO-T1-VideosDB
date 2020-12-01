@@ -1,0 +1,171 @@
+# Tema POO - VideosDB
+
+Nume: Radu-Stefan Minea
+Serie: CA
+Grupa: 324CA
+Timp petrecut pe tema: ~ 1 saptamana
+
+===============================================================================
+## Versionarea codului
+
+Link repo git: https://github.com/raduqq/POO-T1-VideosDB.git
+
+===============================================================================
+## Relatiile intre clase
+
+* Custom classes:
+- User
+- Actor
+- Video
+	+ Clasa abstracta (definita astfel pentru a putea aplica metode precum
+	getAverageRating atat pentru Movies, cat si pentru Shows)
+- Movie
+	+ Mosteneste pe Video
+- Show 
+	+ Mosteneste pe Video
+	+ Contine o lista de obiecte tip Season
+- Season
+ 
+ * Databases:
+ - ActorsDB
+ 	+ Lista de obiecte tip Actor
+ - GenreDB
+ 	+ Dictionar [genreName : List<videoNames>]
+ - UsersDB
+ 	+ Lista de obiecte tip User
+ - VideosDB
+ 	+ Lista de obiecte tip Video
+ 
+* Action classes:
+- Command
+- Query
+	+ Actors (clasa interna - centralizeaza query-urile ce tin de actori)
+	+ Videos (asemenea) 
+	+ Users  (asemenea)
+- Recommend
+
+===============================================================================
+## Logica programului
+
+Pentru tot ce a tinut de sortari, filtari si map-ari (de exemplu, sa reduc o
+lista de Video-uri la o lista de titluri de Video-uri), am folosit API-ul
+stream.
+
+Query-urile si Recomandarile au la baza aceste operatii (sortare, filtrare,
+mapare), iar realizarea acestora a urmat urmatorul pattern:
+
+- Creeaza Comparatorul in functie de criteriile task-ului (FavCount, 
+ViewCount etc.)
+- Creeaza stream-ul pornind de la o lista anume (de Video-uri, Useri, Genuri)
+	+ Filtreaza (spre exemplu, video-urile ce nu au rating)
+	+ Sorteaza in functie de Comparator
+	+ Mapeaza (reduci Video-uri la titlul acestora)
+	+ Transforma stream-ul intr-un String/o lista de String-uri
+
+1. Commands
+
+1.1. Favorite
+* Adauga video-ul la lista de favorites a user-ului curent
+	- Verifica daca video-ul a fost vizionat in istoricul userului
+* Updateaza favCount-ul video-ului
+	
+1.2. View
+* Daca video-ul nu a mai fost vizionat, se creeaza un nou entry in istoricul 
+user-ului.
+* Daca video-ul a fost deja vizioant, se updateaza entry-ul
+	
+1.3. Rate
+* Doua metode separate - una pentru Movies, cealalta pentru Seasons. Extrem de
+similare:
+	- Rating-urile se reflecta in dictionarul "ratings" ce se afla atat in
+	Movies, cat si in Seasons.
+	- Se incremeneteaza numarul de rating-uri date de user
+
+2. Queries
+
+2.1. Actors
+
+2.1.1. Average
+* Gasesc rating-ul actorului pentru ca stiu in ce video-uri a jucat
+(actor.filmography) si pot sa aflu pentru orice fel de video rating-ul acestuia
+(video.getAverageRating)
+
+
+2.1.2. Awards
+* Am convertit numele award-urilor la lowercase pentru a realiza match-uri
+case insensitive
+
+2.1.3. Description
+* Am folosit expresii regulate pentru a realiza match-uri intre descrierea
+actorilor si keywords
+
+
+2.2. Videos
+
+* Pentru toate query-urile de Video-uri, difera doar criteriul de sortare
+(getAverageRating, getFavCount, getDuration si, respectiv, getViewCount)
+
+* Pentru ca:
+(1) Query-urile puteau fi atat pentru Movies, cat si pentru Shows,
+(2) Unele query-uri depindeau de ordinea din baza de date
+	- Am creat o metoda "restrictVideoList" ce, din intreaga lista de
+	video-uri din VideosDB, returna o lista doar cu Movies sau doar cu 
+	Shows
+	- Lista se restrictiona cunoscand numarul de Movies si de Shows din
+	baza de date (calculat in InputLoader)
+
+2.3. Users
+
+* No_Ratings: Numarul de ratings al fiecarui User era deja calculat atunci cand
+se dadea Rate la un video
+
+3. Recommendations
+
+* Toate urmeaza acelasi pattern, in afara de Popular, unde se foloseste acel
+genreMap din GenreDB (HashMap ce face legatura dintre un gen si video-urile
+ce se incadreaza in acel gen):
+	- Sortez genurile dupa popularitate
+	- Iterez prin video-urile fiecarui gen in parte si il returnez pe
+	primul nevazut de utilizator
+
+
+===============================================================================
+## Limitari
+
+* Comanda "rate" nu este polimorfica, intrucat am creat atat metoda "rateMovie"
+cat si cea "rateSeason"
+	- Din moment ce Season nu mosteneste pe Video (asa cum o face Movie), 
+	iar comanda "rate" depind de metoda "findVideoByName" (definita in 
+	Video) pentru gasi Video-ul cu nume dat ca parametru, am intampinat 
+	probleme in a unifica cele doua metode de "rate"
+
+* Ar fi fost elegant sa-mi creez o clasa custom MyGenre; astfel in loc sa pun
+doar numele genurilor in GenreDB, as fi pus obiecte de tip MyGenre
+
+* Proiectul contine cod duplicat acolo unde incerc sa filtrez un stream dupa
+parametri ce pot fi nuli sau nu (years, genres)
+	- Am incercat sa modularizez (printr-o metoda applyYearFilter,
+	applyGenreFilter), insa IntelliJ imi dadea o eroare cum ca acel stream 
+	ar fi devenit terminal. Nu m-am incumetat sa-mi dau seama ce inseamna 
+	asta
+
+===============================================================================
+## Observatii
+
+* As fi preferat ca enuntul sa fie foarte clar explicat din prima (toate
+criteriile de comparatie si edge case-urile sa fie deja precizate, pentru a ma
+putea concentra mai degraba pe un design mult mai eficient dpdv OOP)
+
+* Este drept ca numarul mare de task-uri m-a fortat sa-mi iau o zi doar pentru
+a citi enuntul si a gandi un design al claselor astfel incat toate task-urile
+sa poata fi rezolvate fara modificari ulterioare aduse design-ului (ceea ce
+am reusit sa fac), insa la un moment dat simteam ca ceea ce fac este repetetiv
+si, deci, cu accent pus pe orizontala, in loc de verticala
+	- Spre exemplu, dupa ce am invatat sa folosesc Stream-urile la primul
+	query, toate Query-urile au urmat exact aceeasi structura, doar
+	criteriul de comparatie il schimbam (sortam dupa "getAverageRating" in
+	loc de "getDuration")
+	- In schimb, unele task-uri erau foarte utile, spre exemplu cel de 
+	Search Recommendation, ce m-a fortat sa creez dictionarul ce mapa
+	un gen la video-urile ce se incadreaza in acel gen, pentru a-mi usura
+	lookup-ul
