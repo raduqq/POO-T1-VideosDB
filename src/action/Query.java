@@ -113,6 +113,14 @@ public class Query {
     }
 
     public static class Videos {
+        public static List<Video> restrictVideoList(String objectType, VideosDB videosDB) {
+            if (objectType.equals("movies")) {
+                return videosDB.getVideoList().subList(0, videosDB.getNoMovies());
+            }
+
+            return videosDB.getVideoList().subList(videosDB.getNoMovies(), videosDB.getVideoList().size());
+        }
+
         // rating
 
         public static List<String> favorite(int noVideos, String sortType, String objectType, List<String> years, List<String> genres, VideosDB videosDB) {
@@ -124,15 +132,7 @@ public class Query {
                 favVideoComp = favVideoComp.reversed();
             }
 
-            List<Video> currentVideoList;
-
-            if (objectType.equals("movies")) {
-                currentVideoList = videosDB.getVideoList().subList(0, videosDB.getNoMovies());
-            } else {
-                currentVideoList = videosDB.getVideoList().subList(videosDB.getNoMovies(), videosDB.getVideoList().size());
-            }
-
-            Stream<Video> result = currentVideoList.stream()
+            Stream<Video> result = restrictVideoList(objectType, videosDB).stream()
                                     .filter(video -> video.getViewCount() > 0);
 
             // Applying genre filter, if applicable
@@ -167,16 +167,8 @@ public class Query {
                 mostViewedVideoComp = mostViewedVideoComp.reversed();
             }
 
-            List<Video> currentVideoList;
-
-            if (objectType.equals("movies")) {
-                currentVideoList = videosDB.getVideoList().subList(0, videosDB.getNoMovies());
-            } else {
-                currentVideoList = videosDB.getVideoList().subList(videosDB.getNoMovies(), videosDB.getVideoList().size());
-            }
-
-            Stream<Video> result = currentVideoList.stream()
-                                    .filter(video -> video.getViewCount() > 0);
+            Stream<Video> result = restrictVideoList(objectType, videosDB).stream()
+                    .filter(video -> video.getViewCount() > 0);
 
             // Applying year filter, if applicable
             if (years.get(0) != null) {

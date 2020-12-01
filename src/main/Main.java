@@ -74,7 +74,6 @@ public final class Main {
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult = new JSONArray();
 
-        //TODO add here the entry point to your implementation
         for (ActionInputData action : input.getCommands()) {
             switch (action.getActionType()) {
                 case "command":
@@ -184,6 +183,12 @@ public final class Main {
                 case "recommendation":
                     switch (action.getType()) {
                         case "standard":
+                            // noinspection unchecked
+
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            Recommend.Basic.standard(action.getUsername(),
+                                            input.getMyUserDB(), input.getMyVideoDB())));
+
                             break;
                         case "best_unseen":
                             // noinspection unchecked
@@ -193,8 +198,25 @@ public final class Main {
                                             input.getMyUserDB(), input.getMyVideoDB()))));
                             break;
                         case "popular":
+                            // noinspection unchecked
+
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                    Recommend.Premium.popular(action.getUsername(),
+                                    input.getMyUserDB(), input.getMyGenreDB(), input.getMyVideoDB())));
                             break;
                         case "favorite":
+                            // noinspection unchecked
+
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            Recommend.Premium.favorite(action.getUsername(),
+                                            input.getMyUserDB(), input.getMyVideoDB())));
+                            break;
+                        case "search":
+                            // noinspection unchecked
+
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            Recommend.Premium.search(action.getUsername(),
+                                            input.getMyUserDB(), input.getMyVideoDB())));
                             break;
                     }
                     break;
