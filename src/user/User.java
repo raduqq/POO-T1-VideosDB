@@ -1,7 +1,5 @@
 package user;
 
-import entertainment.Video;
-
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -17,11 +15,11 @@ public final class User {
     /**
      * The history of the movies seen
      */
-    private Map<String, Integer> history;
+    private final Map<String, Integer> history;
     /**
      * Movies added to favorites
      */
-    private ArrayList<String> favoriteVideos;
+    private final ArrayList<String> favoriteVideos;
     /**
      * Total no. of ratings given by user (to all shows)
      */
@@ -58,14 +56,11 @@ public final class User {
         return noRatingsGiven;
     }
 
-    public void incNoRatingsGiven() { noRatingsGiven++;}
-
-    @Override
-    public String toString() {
-        return "User{" + "username='"
-                + username + '\'' + ", subscriptionType='"
-                + subscriptionType + '\'' + ", history="
-                + history + ", favoriteMovies="
-                + favoriteVideos + '}' + '\n';
+    /**
+     * increments no of ratings given by this user
+     */
+    public void incNoRatingsGiven() {
+        noRatingsGiven++;
     }
+
 }

@@ -14,14 +14,21 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Query {
+public final class Query {
     public static class Actors {
-        public static boolean hasAllAwards(Actor actor, List <String> awardsList) {
-            List <String> requiredAwardsList = awardsList.stream()
+        /**
+         * checks if actor has all awards from awardsList
+         * @param actor actor
+         * @param awardsList awardsList
+         * @return true or false
+         */
+        public static boolean hasAllAwards(final Actor actor,
+                                           final List<String> awardsList) {
+            List<String> requiredAwardsList = awardsList.stream()
                     // Converting ActorsAwards type to lower-case String
                     .map(String::toLowerCase)
                     .collect(Collectors.toList());
-            List <String> actorAwardsList = actor.getAwards().keySet().stream()
+            List<String> actorAwardsList = actor.getAwards().keySet().stream()
                     // Converting ActorsAwards type to lower-case String
                     .map(award -> String.valueOf(award).toLowerCase())
                     .collect(Collectors.toList());
@@ -35,7 +42,14 @@ public class Query {
             return true;
         }
 
-        public static boolean hasAllKeywords(String description, List<String> keywords) {
+        /**
+         * checks if actor's description contains all keywords
+         * @param description of actor
+         * @param keywords to be matched with
+         * @return true or false
+         */
+        public static boolean hasAllKeywords(final String description,
+                                             final List<String> keywords) {
             for (String keyword : keywords) {
                 String regex = " " + keyword + "[ ,.!?']";
                 Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -49,10 +63,20 @@ public class Query {
             return true;
         }
 
-        public static List<String> average(int noActors, String sortType, VideosDB videosDB, ActorsDB actorsDB) {
+        /**
+         * ranks actors based on their average rating
+         * @param noActors to be returned
+         * @param sortType sortType
+         * @param videosDB videosDB
+         * @param actorsDB actorsDB
+         * @return query result
+         */
+        public static List<String> average(final int noActors, final String sortType,
+                                           final VideosDB videosDB, final ActorsDB actorsDB) {
             Comparator<Actor> avgActorComp = Comparator
                                             // First sorting criteria -> averageRating of actor
-                                            .comparingDouble((Actor actor) -> actor.getAverageRating(videosDB))
+                                            .comparingDouble((Actor actor) -> actor
+                                                                    .getAverageRating(videosDB))
                                             // Second sorting criteria -> alphabetical order
                                             .thenComparing(Actor::getName);
 
@@ -73,7 +97,16 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        public static List<String> awards(String sortType, List<String> awardsList, ActorsDB actorsDB) {
+        /**
+         * queries actors by awards
+         * @param sortType sortType
+         * @param awardsList to be matched with actors' awards
+         * @param actorsDB actorsDB
+         * @return list of actors who have all awards in awardsList
+         */
+        public static List<String> awards(final String sortType,
+                                          final List<String> awardsList,
+                                          final ActorsDB actorsDB) {
             // Sorting by:
             Comparator<Actor> awardsActorComp = Comparator
                                                 // Total no. awards
@@ -81,7 +114,7 @@ public class Query {
                                                 // Name
                                                 .thenComparing(Actor::getName)
                                                 // Index in database
-                                                .thenComparing(actor -> actorsDB.getActorList().indexOf(actor));
+                                                .thenComparing(actorsDB.getActorList()::indexOf);
 
             if (sortType.equals("desc")) {
                 awardsActorComp = awardsActorComp.reversed();
@@ -94,13 +127,21 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-
-        public static List<String> description(String sortType, List<String> keywords, ActorsDB actorsDB) {
+        /**
+         * queries actors by description
+         * @param sortType sortType
+         * @param keywords to ba matched with actors description
+         * @param actorsDB actorsDB
+         * @return list of actors whose description matches the keywords
+         */
+        public static List<String> description(final String sortType,
+                                               final List<String> keywords,
+                                               final ActorsDB actorsDB) {
             Comparator<Actor> descrActorComp = Comparator
                                                 .comparing(Actor::getName)
-                                                .thenComparing(actor -> actorsDB.getActorList().indexOf(actor));
+                                                .thenComparing(actorsDB.getActorList()::indexOf);
 
-            if(sortType.equals("desc")) {
+            if (sortType.equals("desc")) {
                 descrActorComp = descrActorComp.reversed();
             }
 
@@ -113,15 +154,38 @@ public class Query {
     }
 
     public static class Videos {
-        public static List<Video> restrictVideoList(String objectType, VideosDB videosDB) {
+        /**
+         * restricts video list according to
+         * the type of objects requested (movies or shows)
+         * @param objectType movie or show
+         * @param videosDB videosDB
+         * @return restricted list with only movies or shows
+         */
+        public static List<Video> restrictVideoList(final String objectType,
+                                                    final VideosDB videosDB) {
             if (objectType.equals("movies")) {
                 return videosDB.getVideoList().subList(0, videosDB.getNoMovies());
             }
 
-            return videosDB.getVideoList().subList(videosDB.getNoMovies(), videosDB.getVideoList().size());
+            return videosDB
+                    .getVideoList()
+                    .subList(videosDB.getNoMovies(),
+                            videosDB.getVideoList().size());
         }
 
-        public static List<String> ratings(int noVideos, String sortType, String objectType, List<String> years, List<String> genres, VideosDB videosDB) {
+        /**
+         * query by ratings
+         * @param noVideos to be returned
+         * @param sortType asc or desc
+         * @param objectType movie or show
+         * @param years years
+         * @param genres genres
+         * @param videosDB videosDB
+         * @return query result
+         */
+        public static List<String> ratings(final int noVideos, final String sortType,
+                                           final String objectType, final List<String> years,
+                                           final List<String> genres, final VideosDB videosDB) {
             Comparator<Video> ratingVideoComp = Comparator
                                                 .comparingDouble(Video::getAverageRating)
                                                 .thenComparing(Video::getTitle);
@@ -154,7 +218,19 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        public static List<String> favorite(int noVideos, String sortType, String objectType, List<String> years, List<String> genres, VideosDB videosDB) {
+        /**
+         * query by favorites
+         * @param noVideos to be returned
+         * @param sortType asc or desc
+         * @param objectType movies or shwos
+         * @param years years
+         * @param genres genres
+         * @param videosDB videosDB
+         * @return query result
+         */
+        public static List<String> favorite(final int noVideos, final String sortType,
+                                            final String objectType, final List<String> years,
+                                            final List<String> genres, final VideosDB videosDB) {
             Comparator<Video> favVideoComp = Comparator
                                             .comparingInt(Video::getFavCount)
                                             .thenComparing(Video::getTitle);
@@ -187,7 +263,19 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        public static List<String> longest(int noVideos, String sortType, String objectType, List<String> years, List <String> genres, VideosDB videosDB) {
+        /**
+         * query by longest videos
+         * @param noVideos to be returned
+         * @param sortType asc or desc
+         * @param objectType movies or shows
+         * @param years years
+         * @param genres genres
+         * @param videosDB videosDB
+         * @return query result
+         */
+        public static List<String> longest(final int noVideos, final String sortType,
+                                           final String objectType, final List<String> years,
+                                           final List<String> genres, final VideosDB videosDB) {
             Comparator<Video> longestVideoComp = Comparator
                                                 .comparingInt(Video::getDuration)
                                                 .thenComparing(Video::getTitle);
@@ -219,7 +307,22 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        public static List<String> mostViewed(int noVideos, String sortType, String objectType, List<String> years, List <String> genres, VideosDB videosDB) {
+        /**
+         * query by most viewed videos
+         * @param noVideos to be returned
+         * @param sortType asc or desc
+         * @param objectType movies or shows
+         * @param years years
+         * @param genres genres
+         * @param videosDB videosDB
+         * @return query result
+         */
+        public static List<String> mostViewed(final int noVideos,
+                                              final String sortType,
+                                              final String objectType,
+                                              final List<String> years,
+                                              final List<String> genres,
+                                              final VideosDB videosDB) {
             Comparator<Video> mostViewedVideoComp = Comparator
                                                     .comparingInt(Video::getViewCount)
                                                     .thenComparing(Video::getTitle);
@@ -255,7 +358,16 @@ public class Query {
     }
 
     public static class Users {
-        public static List<String> noRatings(int noUsers, String sortType, UsersDB usersDB) {
+        /**
+         * query by most active users
+         * @param noUsers to be shown
+         * @param sortType asc or desc
+         * @param usersDB usersDB
+         * @return query result
+         */
+        public static List<String> noRatings(final int noUsers,
+                                             final String sortType,
+                                             final UsersDB usersDB) {
             Comparator<User> noRatingsUserComp = Comparator
                                                 .comparingInt(User::getNoRatingsGiven)
                                                 .thenComparing(User::getUsername);

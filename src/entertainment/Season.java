@@ -10,7 +10,7 @@ import java.util.Map;
  * <p>
  * DO NOT MODIFY
  */
-public class Season {
+public final class Season {
     /**
      * Number of current season
      */
@@ -23,9 +23,8 @@ public class Season {
     /**
      * Dictionary [user : givenRating]
      */
-    private Map<User, Double> ratings;
+    private final Map<User, Double> ratings;
 
-    // all that counts, brothers
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
         this.duration = duration;
@@ -40,20 +39,14 @@ public class Season {
         this.duration = duration;
     }
 
-    @Override
-    public String toString() {
-        return "Episode{"
-                + "currentSeason="
-                + currentSeason
-                + ", duration="
-                + duration
-                + '}' + '\n';
-    }
-
     public Map<User, Double> getRatings() {
         return ratings;
     }
 
+    /**
+     * implements getAverageRating inherited from Video
+     * @return average rating of current season
+     */
     public Double getAverageRating() {
         if (getRatings().size() == 0) {
             return (double) 0;

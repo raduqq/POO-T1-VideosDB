@@ -9,10 +9,21 @@ import user.User;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class Command {
-    public static String favorite(String username, String videoTitle, VideosDB videosDB, UsersDB usersDB) {
+public final class Command {
+    /**
+     *
+     * @param username of user who favvs
+     * @param videoTitle of video to be favved
+     * @param videosDB videosDB
+     * @param usersDB usersDB
+     * @return message of command result
+     */
+    public static String favorite(final String username, final String videoTitle,
+                                  final VideosDB videosDB, final UsersDB usersDB) {
         User currentUser = usersDB.findUserByUsername(username);
+        assert currentUser != null;
         Map<String, Integer> currentHistory = currentUser.getHistory();
         List<String> currentFavVideos = currentUser.getFavoriteVideos();
 
@@ -25,7 +36,7 @@ public class Command {
             currentUser.getFavoriteVideos().add(videoTitle);
 
             // Increasing video's favCount
-            videosDB.findVideoByName(videoTitle).incFavCount();
+            Objects.requireNonNull(videosDB.findVideoByName(videoTitle)).incFavCount();
 
             return "success -> " + videoTitle + " was added as favourite";
         }
@@ -33,8 +44,18 @@ public class Command {
         return "error -> " + videoTitle + " is not seen";
     }
 
-    public static String view(String username, String videoTitle, VideosDB videosDB, UsersDB usersDB) {
+    /**
+     *
+     * @param username of user who views
+     * @param videoTitle of video to be viewed
+     * @param videosDB videosDB
+     * @param usersDB usersDB
+     * @return message of command
+     */
+    public static String view(final String username, final String videoTitle,
+                              final VideosDB videosDB, final UsersDB usersDB) {
         User currentUser = usersDB.findUserByUsername(username);
+        assert currentUser != null;
         Map<String, Integer> currentHistory = currentUser.getHistory();
 
         if (currentHistory.containsKey(videoTitle)) {
@@ -46,20 +67,36 @@ public class Command {
         }
 
         // Through this command, user views given video only once
-        videosDB.findVideoByName(videoTitle).incViewCount(1);
+        Objects.requireNonNull(videosDB.findVideoByName(videoTitle)).incViewCount(1);
 
-        return "success -> " + videoTitle + " was viewed with total views of " + currentHistory.get(videoTitle);
+        return "success -> "
+                + videoTitle
+                + " was viewed with total views of "
+                + currentHistory.get(videoTitle);
     }
 
-    public static String rateMovie(String username, String movieTitle, Double grade, VideosDB videosDB, UsersDB usersDB) {
+    /**
+     *
+     * @param username of user who rates the movie
+     * @param movieTitle of movie to be rated
+     * @param grade to be given
+     * @param videosDB videosDB
+     * @param usersDB usersDB
+     * @return message of command result
+     */
+    public static String rateMovie(final String username, final String movieTitle,
+                                   final Double grade, final VideosDB videosDB,
+                                   final UsersDB usersDB) {
         User currentUser = usersDB.findUserByUsername(username);
+        assert currentUser != null;
         Map<String, Integer> currentHistory = currentUser.getHistory();
 
         Video currentMovie = videosDB.findVideoByName(movieTitle);
 
         if (currentHistory.containsKey(movieTitle)) {
-            if(currentMovie.getRatings().containsKey(currentUser)) {
-                return "error -> " + movieTitle + " has been already rated"; // replace with exact message
+            assert currentMovie != null;
+            if (currentMovie.getRatings().containsKey(currentUser)) {
+                return "error -> " + movieTitle + " has been already rated";
             }
 
             currentMovie.getRatings().put(currentUser, grade);
@@ -70,17 +107,31 @@ public class Command {
         return "error -> " + movieTitle + " is not seen";
     }
 
-    public static String rateSeason(String username, String showTitle, int seasonNo, Double grade, VideosDB videosDB, UsersDB usersDB) {
+    /**
+     *
+     * @param username of user who rates season
+     * @param showTitle of show to be rated
+     * @param seasonNo of current season
+     * @param grade to be given
+     * @param videosDB to search in
+     * @param usersDB to search in
+     * @return command result message
+     */
+    public static String rateSeason(final String username, final String showTitle,
+                                    final int seasonNo, final Double grade,
+                                    final VideosDB videosDB, final UsersDB usersDB) {
         User currentUser = usersDB.findUserByUsername(username);
+        assert currentUser != null;
         Map<String, Integer> currentHistory = currentUser.getHistory();
 
         Show currentShow = (Show) videosDB.findVideoByName(showTitle); // couldn't avoid downcast
-        Season currentSeason = currentShow.getSeasons().get(seasonNo - 1); // -1, ca ghici ce, sezonul 1 e la pozitia 0 in arraylist
+        assert currentShow != null;
+        Season currentSeason = currentShow.getSeasons().get(seasonNo - 1);
 
         if (currentHistory.containsKey(showTitle)) {
             if (currentSeason.getRatings().containsKey(currentUser)) {
                 // actually, it's more like showTitle->seasonNo is already rated
-                return "error -> " + showTitle + " is already rated"; // replace with exact message
+                return "error -> " + showTitle + " is already rated";
             }
 
             currentSeason.getRatings().put(currentUser, grade);

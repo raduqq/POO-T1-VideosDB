@@ -6,7 +6,6 @@ import database.ActorsDB;
 import database.GenreDB;
 import database.UsersDB;
 import database.VideosDB;
-import entertainment.Genre;
 import entertainment.Movie;
 import entertainment.Season;
 import entertainment.Show;
@@ -155,7 +154,8 @@ public final class InputLoader {
 
                     // Mapping movie to its genre
                     String currMovieName = (String) ((JSONObject) jsonIterator).get(Constants.NAME);
-                    List<String> currGenres = Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                    List<String> currGenres = Utils
+                            .convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
                             .get(Constants.GENRES));
 
                     for (String currGenre : currGenres) {
@@ -199,7 +199,8 @@ public final class InputLoader {
                     ));
 
                     // Adding show to my custom video database
-                    myVideoDB.addToDB(new Show((String) ((JSONObject) jsonIterator).get(Constants.NAME),
+                    myVideoDB.addToDB(new Show((String) ((JSONObject) jsonIterator)
+                            .get(Constants.NAME),
                             Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
                                     .get(Constants.CAST)),
                             Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
@@ -216,7 +217,8 @@ public final class InputLoader {
 
                     // Mapping show to its genre
                     String currShowName = (String) ((JSONObject) jsonIterator).get(Constants.NAME);
-                    List<String> currGenres = Utils.convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
+                    List<String> currGenres = Utils
+                            .convertJSONArray((JSONArray) ((JSONObject) jsonIterator)
                             .get(Constants.GENRES));
 
                     for (String currGenre : currGenres) {
@@ -264,8 +266,8 @@ public final class InputLoader {
 
     /**
      * The method reads the actions from input file
-     * @param jsonObject
-     * @param size
+     * @param jsonObject jsonObject
+     * @param size size
      * @return A list of actions
      */
     public List<ActionInputData> readActions(final JSONObject jsonObject, final int size) {

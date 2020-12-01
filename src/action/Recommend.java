@@ -6,18 +6,29 @@ import database.VideosDB;
 import entertainment.Video;
 import user.User;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Recommend {
     public static class Basic {
-        public static String standard(String username, UsersDB usersDB, VideosDB videosDB) {
+        /**
+         * standard recommendation strategy
+         * @param username username
+         * @param usersDB usersDB
+         * @param videosDB videosDB
+         * @return recommendation result
+         */
+        public static String standard(final String username,
+                                      final UsersDB usersDB,
+                                      final VideosDB videosDB) {
             User user = usersDB.findUserByUsername(username);
 
             String result = videosDB.getVideoList().stream()
-                            .filter(video -> !user.getHistory().containsKey(video.getTitle()))
+                            .filter(video -> {
+                                assert user != null;
+                                return !user.getHistory().containsKey(video.getTitle());
+                            })
                             .map(Video::getTitle)
                             .limit(1)
                             .collect(Collectors.joining());
@@ -29,20 +40,34 @@ public class Recommend {
 
             return "StandardRecommendation result: " + result;
         }
-        
-        public static String bestUnseen(String username, UsersDB usersDB, VideosDB videosDB) {
+
+        /**
+         * best unseen recommendation strategy
+         * @param username username
+         * @param usersDB usersDB
+         * @param videosDB videosDB
+         * @return recommendation result
+         */
+        public static String bestUnseen(final String username,
+                                        final UsersDB usersDB,
+                                        final VideosDB videosDB) {
             User user = usersDB.findUserByUsername(username);
-            
+
             Comparator<Video> bestUnseenVideoComp = Comparator
                                                     .comparingDouble(Video::getAverageRating)
                                                     // First sorts by ratings in descending order
                                                     .reversed()
                                                     // Then ascendingly by index in database
-                                                    .thenComparingInt(video -> videosDB.getVideoList().indexOf(video));
+                                                    .thenComparingInt(video -> videosDB
+                                                                            .getVideoList()
+                                                                            .indexOf(video));
 
             String result = videosDB.getVideoList().stream()
                     // Filters out videos that aren't in user's view history
-                    .filter(video -> !user.getHistory().containsKey(video.getTitle()))
+                    .filter(video -> {
+                        assert user != null;
+                        return !user.getHistory().containsKey(video.getTitle());
+                    })
                     .sorted(bestUnseenVideoComp)
                     .map(Video::getTitle)
                     // We need only one recommendation
@@ -59,30 +84,49 @@ public class Recommend {
     }
 
     public static class Premium {
-        //TODO
-        public static String popular(String username, UsersDB usersDB, GenreDB genreDB, VideosDB videosDB) {
+        /**
+         * NOTE: not implemented yet
+         *
+         * popular recommendation strategy
+         * ranks genre by their popularity
+         * @param username username
+         * @param usersDB usersDB
+         * @param genreDB genreDB
+         * @param videosDB videosDB
+         * @return first non-viewed video from most popular genre
+         */
+        public static String popular(final String username,
+                                     final UsersDB usersDB,
+                                     final GenreDB genreDB,
+                                     final VideosDB videosDB) {
             String result = null;
             User user = usersDB.findUserByUsername(username);
 
             // Attempting to get Premium recommendation for Basic user
+            assert user != null;
             if (user.getSubscriptionType().equals("BASIC")) {
                 return "PopularRecommendation cannot be applied!";
             }
 
-            //TODO: create CustomGenre class, otherwise this won't work
-
             // Couldn't find a recommendation
-            if (result == null || result.isEmpty()) {
-                return "PopularRecommendation cannot be applied!";
-            }
+            return "PopularRecommendation cannot be applied!";
 
-            return "PopularRecommendation result: " + result;
         }
 
-        public static String favorite(String username, UsersDB usersDB, VideosDB videosDB) {
+        /**
+         * favorite recommendation strategy
+         * @param username username
+         * @param usersDB usersDB
+         * @param videosDB videosDB
+         * @return recommendation result
+         */
+        public static String favorite(final String username,
+                                      final UsersDB usersDB,
+                                      final VideosDB videosDB) {
             User user = usersDB.findUserByUsername(username);
 
             // Attempting to get Premium recommendation for Basic user
+            assert user != null;
             if (user.getSubscriptionType().equals("BASIC")) {
                 return "PopularRecommendation cannot be applied!";
             }
@@ -95,7 +139,9 @@ public class Recommend {
                                             // Filters out videos that were not favved
                                             .filter(video -> video.getFavCount() > 0)
                                             // Filters out videos that were already watched
-                                            .filter(video -> !user.getHistory().containsKey(video.getTitle()))
+                                            .filter(video -> !user
+                                                            .getHistory()
+                                                            .containsKey(video.getTitle()))
                                             .sorted(favoriteVideoComp)
                                             .map(Video::getTitle)
                                             .limit(1)
@@ -109,10 +155,20 @@ public class Recommend {
             return "FavoriteRecommendation result: " + result;
         }
 
-        public static String search(String username, String genreName, UsersDB usersDB, VideosDB videosDB) {
+        /**
+         * search recommendation strategy
+         * @param username username
+         * @param genreName genreName
+         * @param usersDB usersDB
+         * @param videosDB videosDB
+         * @return recommendation result
+         */
+        public static String search(final String username, final String genreName,
+                                    final UsersDB usersDB, final VideosDB videosDB) {
             User user = usersDB.findUserByUsername(username);
 
             // Attempting to get Premium recommendation for Basic user
+            assert user != null;
             if (user.getSubscriptionType().equals("BASIC")) {
                 return "SearchRecommendation cannot be applied!";
             }

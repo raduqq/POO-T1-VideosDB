@@ -5,20 +5,31 @@ import user.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersDB {
-    private List<User> userList;
+public final class UsersDB {
+    private final List<User> userList;
 
-    public UsersDB() { userList = new ArrayList<>(); }
+    public UsersDB() {
+        userList = new ArrayList<>();
+    }
 
     public List<User> getUserList() {
         return userList;
     }
 
-    public void addToDB(User user) {
+    /**
+     *
+     * @param user to be added into the database
+     */
+    public void addToDB(final User user) {
         userList.add(user);
     }
 
-    public User findUserByUsername(String username) {
+    /**
+     *
+     * @param username to be matched with a user in the database
+     * @return user with the given username
+     */
+    public User findUserByUsername(final String username) {
         for (User user : userList) {
             if (user.getUsername().equals(username)) {
                 return user;
@@ -26,12 +37,5 @@ public class UsersDB {
         }
 
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return "UsersDB{" +
-                "userList=" + userList +
-                '}';
     }
 }

@@ -1,11 +1,8 @@
 package entertainment;
 
-import user.User;
-
 import java.util.ArrayList;
-import java.util.Map;
 
-public class Movie extends Video {
+public final class Movie extends Video {
     @Override
     public Double getAverageRating() {
         if (getRatings().size() == 0) {

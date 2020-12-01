@@ -124,11 +124,11 @@ public final class Input {
 
     @Override
     public String toString() {
-        return "Input{" +
-                "myUserDB=" + myUserDB +
-                ", myActorDB=" + myActorDB +
-                ", myGenreDB=" + myGenreDB +
-                ", myVideoDB=" + myVideoDB +
-                '}';
+        return "Input{"
+                + "myUserDB=" + myUserDB
+                + ", myActorDB=" + myActorDB
+                + ", myGenreDB=" + myGenreDB
+                + ", myVideoDB=" + myVideoDB
+                + '}';
     }
 }

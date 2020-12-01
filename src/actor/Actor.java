@@ -22,7 +22,7 @@ public final class Actor {
     /**
      * awards won by the actor
      */
-    private Map<ActorsAwards, Integer> awards;
+    private final Map<ActorsAwards, Integer> awards;
 
     public Actor(final String name, final String careerDescription,
                           final ArrayList<String> filmography,
@@ -61,7 +61,12 @@ public final class Actor {
         this.careerDescription = careerDescription;
     }
 
-    public Double getAverageRating(VideosDB videosDB) {
+    /**
+     *
+     * @param videosDB videosDB
+     * @return average rating of actor based on movies he has played in
+     */
+    public Double getAverageRating(final VideosDB videosDB) {
         Double averageRating = (double) 0;
         int ratedMoviesCnt = 0;
 
@@ -92,6 +97,9 @@ public final class Actor {
         return averageRating / ratedMoviesCnt;
     }
 
+    /**
+     * @return total number of awards won by actor
+     */
     public Integer getTotalNoAwards() {
         Integer cnt = 0;
 
@@ -100,15 +108,5 @@ public final class Actor {
         }
 
         return cnt;
-    }
-
-    @Override
-    public String toString() {
-        return "Actor{" +
-                "name='" + name + '\'' +
-//                ", careerDescription='" + careerDescription + '\'' +
-                ", filmography=" + filmography +
-                ", awards=" + awards +
-                '}' + '\n';
     }
 }

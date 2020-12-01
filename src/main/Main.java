@@ -82,160 +82,200 @@ public final class Main {
                             // noinspection unchecked
 
                             arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                                Command.favorite(action.getUsername(),
-                                                action.getTitle(), input.getMyVideoDB(), input.getMyUserDB())));
+                                    Command.favorite(action.getUsername(),
+                                            action.getTitle(),
+                                            input.getMyVideoDB(),
+                                            input.getMyUserDB())));
                             break;
                         case "view":
                             // noinspection unchecked
 
                             arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                                Command.view(action.getUsername(),
-                                                action.getTitle(), input.getMyVideoDB(), input.getMyUserDB())));
+                                    Command.view(action.getUsername(),
+                                            action.getTitle(),
+                                            input.getMyVideoDB(),
+                                            input.getMyUserDB())));
                             break;
                         case "rating":
                             if (action.getSeasonNumber() == 0) {
                                 // No season given => rate movie
                                 // noinspection unchecked
 
-                                arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                                    Command.rateMovie(action.getUsername(), action.getTitle(),
-                                                    action.getGrade(), input.getMyVideoDB(), input.getMyUserDB())));
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        Command.rateMovie(action.getUsername(),
+                                                action.getTitle(),
+                                                action.getGrade(),
+                                                input.getMyVideoDB(),
+                                                input.getMyUserDB())));
                             } else {
                                 // Season given => rate show
                                 // noinspection unchecked
 
-                                arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                                    Command.rateSeason(action.getUsername(), action.getTitle(),
-                                                    action.getSeasonNumber(), action.getGrade(),
-                                                    input.getMyVideoDB(), input.getMyUserDB())));
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        Command.rateSeason(action.getUsername(), action.getTitle(),
+                                                action.getSeasonNumber(), action.getGrade(),
+                                                input.getMyVideoDB(), input.getMyUserDB())));
                             }
                             break;
                         default:
-                            throw new IllegalStateException("Unexpected value: " + action.getType());
+                            throw new IllegalStateException("Unexpected value: "
+                                                            + action.getType());
                     }
                     break;
                 case "query":
                     switch (action.getObjectType()) {
                         case "actors":
-                            switch (action.getCriteria()) {
-                                case "average":
-                                    // noinspection unchecked
+                            if ("average".equals(action.getCriteria())) {
+                                // noinspection unchecked
 
-                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                                    ("Query result: " + Query.Actors.average(action.getNumber(),
-                                                    action.getSortType(), input.getMyVideoDB(), input.getMyActorDB()))));
-                                    break;
-                                case "awards":
-                                    // noinspection unchecked
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        ("Query result: "
+                                                + Query.Actors.average(action.getNumber(),
+                                                action.getSortType(), input.getMyVideoDB(),
+                                                input.getMyActorDB()))));
+                            } else if ("awards".equals(action.getCriteria())) {
+                                // noinspection unchecked
 
-                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                                    ("Query result: " + Query.Actors.awards(action.getSortType(),
-                                                    action.getFilters().get(Constants.FILTER_AWARDS_INDEX),
-                                                    input.getMyActorDB()))));
-                                    break;
-                                case "filter_description":
-                                    // noinspection unchecked
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        ("Query result: "
+                                                + Query.Actors.awards(action.getSortType(),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_AWARDS_INDEX),
+                                                input.getMyActorDB()))));
+                            } else if ("filter_description".equals(action.getCriteria())) {
+                                // noinspection unchecked
 
-                                    arrayResult.add((fileWriter.writeFile(action.getActionId(), null,
-                                                    ("Query result: " + Query.Actors.description(action.getSortType(),
-                                                    action.getFilters().get(Constants.FILTER_WORDS_INDEX),
-                                                    input.getMyActorDB())))));
-                                    break;
+                                arrayResult.add((fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        ("Query result: "
+                                                + Query.Actors.description(action.getSortType(),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_WORDS_INDEX),
+                                                input.getMyActorDB())))));
+                            } else {
+                                throw new IllegalStateException("Unexpected value: "
+                                        + action.getCriteria());
                             }
                             break;
                         case "users":
                             // noinspection unchecked
 
-                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            ("Query result: " + Query.Users.noRatings(action.getNumber(),
-                                            action.getSortType(), input.getMyUserDB()))));
+                            arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                    null,
+                                        ("Query result: "
+                                        + Query.Users.noRatings(action.getNumber(),
+                                        action.getSortType(), input.getMyUserDB()))));
                             break;
                         default:
                             // case "movies" + case "shows"
-                            switch (action.getCriteria()) {
-                                case "ratings":
-                                    // noinspection unchecked
+                            if ("ratings".equals(action.getCriteria())) {
+                                // noinspection unchecked
 
-                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            ("Query result: " + Query.Videos.ratings(action.getNumber(),
-                                                    action.getSortType(), action.getObjectType(),
-                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
-                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
-                                                    input.getMyVideoDB()))));
-                                    break;
-                                case "longest":
-                                    // noinspection unchecked
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        ("Query result: "
+                                                + Query.Videos.ratings(action.getNumber(),
+                                                action.getSortType(), action.getObjectType(),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_YEAR_INDEX),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_GENRE_INDEX),
+                                                input.getMyVideoDB()))));
+                            } else if ("longest".equals(action.getCriteria())) {
+                                // noinspection unchecked
 
-                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            ("Query result: " + Query.Videos.longest(action.getNumber(),
-                                                    action.getSortType(), action.getObjectType(),
-                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
-                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
-                                                    input.getMyVideoDB()))));
-                                    break;
-                                case "favorite":
-                                    // noinspection unchecked
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        ("Query result: "
+                                                + Query.Videos.longest(action.getNumber(),
+                                                action.getSortType(), action.getObjectType(),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_YEAR_INDEX),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_GENRE_INDEX),
+                                                input.getMyVideoDB()))));
+                            } else if ("favorite".equals(action.getCriteria())) {
+                                // noinspection unchecked
 
-                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            ("Query result: " + Query.Videos.favorite(action.getNumber(),
-                                                    action.getSortType(), action.getObjectType(),
-                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
-                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
-                                                    input.getMyVideoDB()))));
-                                    break;
-                                case "most_viewed":
-                                    // noinspection unchecked
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        ("Query result: "
+                                                + Query.Videos.favorite(action.getNumber(),
+                                                action.getSortType(), action.getObjectType(),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_YEAR_INDEX),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_GENRE_INDEX),
+                                                input.getMyVideoDB()))));
+                            } else if ("most_viewed".equals(action.getCriteria())) {
+                                // noinspection unchecked
 
-                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            ("Query result: " + Query.Videos.mostViewed(action.getNumber(),
-                                                    action.getSortType(), action.getObjectType(),
-                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
-                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
-                                                    input.getMyVideoDB()))));
-                                    break;
+                                arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                        null,
+                                        ("Query result: "
+                                                + Query.Videos.mostViewed(action.getNumber(),
+                                                action.getSortType(), action.getObjectType(),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_YEAR_INDEX),
+                                                action.getFilters()
+                                                        .get(Constants.FILTER_GENRE_INDEX),
+                                                input.getMyVideoDB()))));
+                            } else {
+                                throw new IllegalStateException("Unexpected value: "
+                                        + action.getCriteria());
                             }
                     }
                     break;
                 case "recommendation":
-                    switch (action.getType()) {
-                        case "standard":
-                            // noinspection unchecked
+                    if ("standard".equals(action.getType())) {
+                        // noinspection unchecked
 
-                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            Recommend.Basic.standard(action.getUsername(),
-                                            input.getMyUserDB(), input.getMyVideoDB())));
+                        arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                null,
+                                Recommend.Basic.standard(action.getUsername(),
+                                        input.getMyUserDB(), input.getMyVideoDB())));
+                    } else if ("best_unseen".equals(action.getType())) {
+                        // noinspection unchecked
 
-                            break;
-                        case "best_unseen":
-                            // noinspection unchecked
+                        arrayResult.add((fileWriter.writeFile(action.getActionId(),
+                                null,
+                                Recommend.Basic.bestUnseen(action.getUsername(),
+                                        input.getMyUserDB(), input.getMyVideoDB()))));
+                    } else if ("popular".equals(action.getType())) {
+                        // noinspection unchecked
 
-                            arrayResult.add((fileWriter.writeFile(action.getActionId(), null,
-                                            Recommend.Basic.bestUnseen(action.getUsername(),
-                                            input.getMyUserDB(), input.getMyVideoDB()))));
-                            break;
-                        case "popular":
-                            // noinspection unchecked
+                        arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                null,
+                                Recommend.Premium.popular(action.getUsername(),
+                                        input.getMyUserDB(), input.getMyGenreDB(),
+                                        input.getMyVideoDB())));
+                    } else if ("favorite".equals(action.getType())) {
+                        // noinspection unchecked
 
-                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                    Recommend.Premium.popular(action.getUsername(),
-                                    input.getMyUserDB(), input.getMyGenreDB(), input.getMyVideoDB())));
-                            break;
-                        case "favorite":
-                            // noinspection unchecked
+                        arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                null,
+                                Recommend.Premium.favorite(action.getUsername(),
+                                        input.getMyUserDB(), input.getMyVideoDB())));
+                    } else if ("search".equals(action.getType())) {
+                        // noinspection unchecked
 
-                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            Recommend.Premium.favorite(action.getUsername(),
-                                            input.getMyUserDB(), input.getMyVideoDB())));
-                            break;
-                        case "search":
-                            // noinspection unchecked
-
-                            arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            Recommend.Premium.search(action.getUsername(), action.getGenre(),
-                                            input.getMyUserDB(), input.getMyVideoDB())));
-                            break;
+                        arrayResult.add(fileWriter.writeFile(action.getActionId(),
+                                null,
+                                Recommend.Premium.search(action.getUsername(),
+                                        action.getGenre(),
+                                        input.getMyUserDB(),
+                                        input.getMyVideoDB())));
+                    } else {
+                        throw new IllegalStateException("Unexpected value: "
+                                + action.getType());
                     }
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + action.getActionType());
             }
         }
 

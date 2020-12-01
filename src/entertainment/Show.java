@@ -2,7 +2,7 @@ package entertainment;
 
 import java.util.ArrayList;
 
-public class Show extends Video {
+public final class Show extends Video {
     /**
      * Number of seasons
      */
@@ -30,6 +30,10 @@ public class Show extends Video {
         return seasons;
     }
 
+    /**
+     * computes total duration of Show
+     * based on duration of season
+     */
     public void computeDuration() {
         this.setDuration(0);
 
@@ -49,11 +53,4 @@ public class Show extends Video {
         return averageRating / numberOfSeasons;
     }
 
-    @Override
-    public String toString() {
-        return "Show{" +
-                "numberOfSeasons=" + numberOfSeasons +
-                ", seasons=" + seasons +
-                '}' + '\n';
-    }
 }
