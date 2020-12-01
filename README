@@ -166,6 +166,6 @@ si, deci, cu accent pus pe orizontala, in loc de verticala
 	criteriul de comparatie il schimbam (sortam dupa "getAverageRating" in
 	loc de "getDuration")
 	- In schimb, unele task-uri erau foarte utile, spre exemplu cel de 
-	Search Recommendation, ce m-a fortat sa creez dictionarul ce mapa
+	Popular Recommendation, ce m-a fortat sa creez dictionarul ce mapa
 	un gen la video-urile ce se incadreaza in acel gen, pentru a-mi usura
 	lookup-ul
