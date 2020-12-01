@@ -154,8 +154,24 @@ public final class Main {
                             // case "movies" + case "shows"
                             switch (action.getCriteria()) {
                                 case "ratings":
+                                    // noinspection unchecked
+
+                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            ("Query result: " + Query.Videos.ratings(action.getNumber(),
+                                                    action.getSortType(), action.getObjectType(),
+                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
+                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
+                                                    input.getMyVideoDB()))));
                                     break;
                                 case "longest":
+                                    // noinspection unchecked
+
+                                    arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
+                                            ("Query result: " + Query.Videos.longest(action.getNumber(),
+                                                    action.getSortType(), action.getObjectType(),
+                                                    action.getFilters().get(Constants.FILTER_YEAR_INDEX),
+                                                    action.getFilters().get(Constants.FILTER_GENRE_INDEX),
+                                                    input.getMyVideoDB()))));
                                     break;
                                 case "favorite":
                                     // noinspection unchecked
@@ -215,7 +231,7 @@ public final class Main {
                             // noinspection unchecked
 
                             arrayResult.add(fileWriter.writeFile(action.getActionId(), null,
-                                            Recommend.Premium.search(action.getUsername(),
+                                            Recommend.Premium.search(action.getUsername(), action.getGenre(),
                                             input.getMyUserDB(), input.getMyVideoDB())));
                             break;
                     }

@@ -109,7 +109,7 @@ public class Recommend {
             return "FavoriteRecommendation result: " + result;
         }
 
-        public static String search(String username, UsersDB usersDB, VideosDB videosDB) {
+        public static String search(String username, String genreName, UsersDB usersDB, VideosDB videosDB) {
             User user = usersDB.findUserByUsername(username);
 
             // Attempting to get Premium recommendation for Basic user
@@ -122,6 +122,7 @@ public class Recommend {
                     .thenComparing(Video::getTitle);
 
             List<String> result = videosDB.getVideoList().stream()
+                                .filter(video -> video.getGenres().contains(genreName))
                                 .filter(video -> !user.getHistory().containsKey(video.getTitle()))
                                 .sorted(searchVideoComp)
                                 .map(Video::getTitle)

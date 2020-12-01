@@ -121,7 +121,38 @@ public class Query {
             return videosDB.getVideoList().subList(videosDB.getNoMovies(), videosDB.getVideoList().size());
         }
 
-        // rating
+        public static List<String> ratings(int noVideos, String sortType, String objectType, List<String> years, List<String> genres, VideosDB videosDB) {
+            Comparator<Video> ratingVideoComp = Comparator
+                                                .comparingDouble(Video::getAverageRating)
+                                                .thenComparing(Video::getTitle);
+
+            if (sortType.equals("desc")) {
+                ratingVideoComp = ratingVideoComp.reversed();
+            }
+
+            Stream<Video> result = restrictVideoList(objectType, videosDB).stream()
+                                    .filter(video -> video.getAverageRating() > 0);
+
+            // Applying genre filter, if applicable
+            if (genres.get(0) != null) {
+                for (String genre : genres) {
+                    result = result.filter((video -> video.getGenres().contains(genre)));
+                }
+            }
+
+            // Applying year filter, if applicable
+            if (years.get(0) != null) {
+                for (String year : years) {
+                    result = result.filter(video -> Integer.parseInt(year) == video.getYear());
+                }
+            }
+
+            return result
+                    .sorted(ratingVideoComp)
+                    .map(Video::getTitle)
+                    .limit(noVideos)
+                    .collect(Collectors.toList());
+        }
 
         public static List<String> favorite(int noVideos, String sortType, String objectType, List<String> years, List<String> genres, VideosDB videosDB) {
             Comparator<Video> favVideoComp = Comparator
@@ -156,7 +187,37 @@ public class Query {
                     .collect(Collectors.toList());
         }
 
-        // longest
+        public static List<String> longest(int noVideos, String sortType, String objectType, List<String> years, List <String> genres, VideosDB videosDB) {
+            Comparator<Video> longestVideoComp = Comparator
+                                                .comparingInt(Video::getDuration)
+                                                .thenComparing(Video::getTitle);
+
+            if (sortType.equals("desc")) {
+                longestVideoComp = longestVideoComp.reversed();
+            }
+
+            Stream<Video> result = restrictVideoList(objectType, videosDB).stream();
+
+            // Applying genre filter, if applicable
+            if (genres.get(0) != null) {
+                for (String genre : genres) {
+                    result = result.filter((video -> video.getGenres().contains(genre)));
+                }
+            }
+
+            // Applying year filter, if applicable
+            if (years.get(0) != null) {
+                for (String year : years) {
+                    result = result.filter(video -> Integer.parseInt(year) == video.getYear());
+                }
+            }
+
+            return result
+                    .sorted(longestVideoComp)
+                    .map(Video::getTitle)
+                    .limit(noVideos)
+                    .collect(Collectors.toList());
+        }
 
         public static List<String> mostViewed(int noVideos, String sortType, String objectType, List<String> years, List <String> genres, VideosDB videosDB) {
             Comparator<Video> mostViewedVideoComp = Comparator
