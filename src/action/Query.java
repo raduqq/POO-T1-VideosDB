@@ -51,7 +51,7 @@ public final class Query {
         public static boolean hasAllKeywords(final String description,
                                              final List<String> keywords) {
             for (String keyword : keywords) {
-                String regex = " " + keyword + "[ ,.!?']";
+                String regex = "[ -]" + keyword + "[ ,.!?'-]";
                 Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(description);
 

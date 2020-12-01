@@ -131,7 +131,7 @@ public final class Command {
         if (currentHistory.containsKey(showTitle)) {
             if (currentSeason.getRatings().containsKey(currentUser)) {
                 // actually, it's more like showTitle->seasonNo is already rated
-                return "error -> " + showTitle + " is already rated";
+                return "error -> " + showTitle + " has been already rated";
             }
 
             currentSeason.getRatings().put(currentUser, grade);

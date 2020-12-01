@@ -90,22 +90,41 @@ public class Recommend {
          * popular recommendation strategy
          * ranks genre by their popularity
          * @param username username
-         * @param usersDB usersDB
-         * @param genreDB genreDB
-         * @param videosDB videosDB
+         * @param usersDB to search in
+         * @param genreDB to search in
+         * @param videosDB to search in
          * @return first non-viewed video from most popular genre
          */
         public static String popular(final String username,
                                      final UsersDB usersDB,
                                      final GenreDB genreDB,
                                      final VideosDB videosDB) {
-            String result = null;
             User user = usersDB.findUserByUsername(username);
 
             // Attempting to get Premium recommendation for Basic user
             assert user != null;
             if (user.getSubscriptionType().equals("BASIC")) {
                 return "PopularRecommendation cannot be applied!";
+            }
+
+            // Build the comparator
+            Comparator<Object> popularGenreComp = Comparator
+                                                .comparing(genreName -> genreDB.
+                                                        getPopularity(String.valueOf(genreName),
+                                                                videosDB))
+                                                .reversed();
+
+            // Build the stream
+            List<String> popularGenres = genreDB.getGenreMap().keySet().stream()
+                                        .sorted(popularGenreComp)
+                                        .collect(Collectors.toList());
+
+            for (String genreName : popularGenres) {
+                for (String videoName : genreDB.getGenreMap().get(genreName)) {
+                    if (!user.getHistory().containsKey(videoName)) {
+                        return "PopularRecommendation result: " + videoName;
+                    }
+                }
             }
 
             // Couldn't find a recommendation
@@ -128,7 +147,7 @@ public class Recommend {
             // Attempting to get Premium recommendation for Basic user
             assert user != null;
             if (user.getSubscriptionType().equals("BASIC")) {
-                return "PopularRecommendation cannot be applied!";
+                return "FavoriteRecommendation cannot be applied!";
             }
 
             Comparator<Video> favoriteVideoComp = Comparator
@@ -174,8 +193,8 @@ public class Recommend {
             }
 
             Comparator<Video> searchVideoComp = Comparator
-                    .comparingInt(Video::getFavCount)
-                    .thenComparing(Video::getTitle);
+                                            .comparingInt(Video::getFavCount)
+                                            .thenComparing(Video::getTitle);
 
             List<String> result = videosDB.getVideoList().stream()
                                 .filter(video -> video.getGenres().contains(genreName))
